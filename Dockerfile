@@ -30,6 +30,6 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy the rest of the project
 COPY . .
 
-# Railway provides $PORT. Migrate + collect static, then start Gunicorn.
-CMD CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn trust_aluminium.wsgi --bind 0.0.0.0:${PORT:-8080}"]
-# CMD CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn trust_aluminium.wsgi --bind 0.0.0.0:${PORT:-8080}"]
+# Railway provides $PORT at runtime. Wrapping the command in `sh -c` ensures
+# the shell expands $PORT into the real port number (with 8080 as a fallback).
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn trust_aluminium.wsgi --bind 0.0.0.0:${PORT:-8080}"]
