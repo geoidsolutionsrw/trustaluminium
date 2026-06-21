@@ -1,7 +1,7 @@
 import os
 
-# Railway provides the PORT environment variable. Reading it here in Python
-# means we never depend on the shell expanding $PORT in the start command,
+# Railway ALWAYS injects and routes port 8080 at runtime, so we bind to it
+# directly. Hardcoding avoids any dependency on shell variable expansion,
 # which is the cause of the "'$PORT' is not a valid port number" error.
-bind = f"0.0.0.0:{os.environ.get('PORT', '8080')}"
+bind = "0.0.0.0:8080"
 workers = 3
