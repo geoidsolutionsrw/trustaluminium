@@ -1,0 +1,158 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;500&family=Poppins:wght@200;500&display=swap');
+
+
+/* font-family: 'Poppins', sans-serif; */
+*{
+    font-family: 'Poppins', sans-serif;;
+    margin:0; padding: 0;
+    box-sizing: border-box;
+    outline:none; border:none;
+    text-decoration: none;
+}
+nav{
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.4);
+}
+.navbar{
+    padding: 20px;
+    background: rgb(8,107,113);
+    background: linear-gradient(90deg, rgba(8,107,113,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    
+}
+
+.card .img-fit{
+    aspect-ratio:16/9 ;
+    object-fit:cover ;
+}
+
+.card{
+    height: 100%;
+    margin-top: 10px;
+}
+.card-body{
+    display: flex ;
+    height: 100%;
+    flex-direction: column;
+}
+.card-text{
+    flex-grow: 1;
+}
+
+@media(max-width:767.98px){
+    .card .img-fit{
+        aspect-ratio: 1.45/1;
+    }
+}
+.img-size{
+    width:80px;
+    height:600px;
+}
+img{
+    width: 100%;
+}
+/* service section css */
+section{
+    padding-top:100px;
+    padding-bottom: 100px;
+}
+.card-effect{
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    background-color: #fff;
+    padding: 25px;
+    transition:all 0.35s ease;
+}
+.card-effect:hover{
+    box-shadow: none;
+    transform: translateY(5px);
+}
+.card:hover{
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.3);
+   
+}
+.iconbox{
+    width: 54px;
+    height:54px;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    background-color: rgb(40, 127, 184) ;
+    color:#fff;
+    font-size: 32px;
+    border-radius: 100px;
+
+}
+.service{
+    position:relative;
+    z-index: 2;
+    overflow: hidden;
+}
+.service::after{
+    content:'';
+    width: 100%;
+    height: 100%;
+    position:absolute;
+    top:-100%;
+    left:0;
+    background-color:rgb(40, 127, 184) ;
+    z-index:-1;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+.service:hover h5,
+.service:hover p{
+    color:#fff
+}
+.service:hover .iconbox{
+    background-color: #fff;
+    color:rgb(40, 127, 184) ;
+}
+.service:hover::after{
+    opacity:1;
+    top:0;
+}
+/* Project css */
+.project{
+    position:relative;
+    overflow: hidden;
+    height: 300px;
+}
+.project .overlay{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color: rgb(21, 20, 51,0.5);
+    padding: 30px;
+    display: flex;
+    align-items: flex-end; 
+    transition: all 0.4 ease;
+    opacity: 0;   
+}
+.project img{
+    transition: all 0.4 ease;
+}
+.project:hover .overlay{
+    opacity: 1;
+}
+.project:hover img{
+    transform: scale(1.2);
+}
+
+/* slide css */
+.carousel-item .btn{
+    display:inline-block;
+    padding: 8px 30px;
+    margin:10px 0;
+    font-size:17px;
+    background:#fff ;
+    color:#2980b9;
+    transition: .2s ease-out;
+}
+.carousel-caption {
+
+    width:100%;
+    left:0;
+    background-color: rgb(41, 128, 185,0.6);
+    display:block;
+} 

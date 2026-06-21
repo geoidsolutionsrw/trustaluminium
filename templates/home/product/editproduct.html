@@ -1,0 +1,71 @@
+{% extends 'home/base.html' %} 
+{% load static %} {% block title %}Edit Product{%endblock %} {% block content %}
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Product Edit</h4>
+        <h6>Update product</h6>
+      </div>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="productid">Product ID</label>
+                <input
+                  type="text"
+                  id="productid"
+                  class="form-control"
+                  value="{{ form.instance.productid }}"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="product_name">Product Name</label>
+                {{ form.product_name }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="category">Category</label>
+                {{ form.category }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="brand">Brand</label>
+                {{ form.brand }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="price">Price</label>
+                {{ form.price }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="quantity">Quantity</label>
+                {{ form.quantity }}
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-submit me-2">Update</button>
+              <a href="{% url 'productlist' %}" class="btn btn-cancel">Cancel</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    
+  </div>
+</div>
+{% endblock %}

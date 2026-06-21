@@ -1,0 +1,116 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %} Add Product {% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4>Product Add</h4>
+                <h6>Create new product</h6>
+            </div>
+        </div>
+
+        <form method="post" action="{% url 'addproduct' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Product Name -->
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Product Name</label>
+                                {{ form.product_name }}
+                            </div>
+                        </div>
+                        
+                        <!-- Category -->
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Category</label>
+                                {{ form.category }}
+                            </div>
+                        </div>
+
+                        <!-- Brand -->
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Brand</label>
+                                {{ form.brand }}
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label for="price">Price</label>
+                                {{ form.price }}
+                            </div>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                {{ form.quantity }}
+                            </div>
+                        </div>
+                        
+                        <!-- Image Upload -->
+                        <div class="col-lg-3 col-lg-6" >
+                           <div class="image-upload">
+                           {{ form.image }}
+                             <div class="image-uploads">
+                             <img src="{% static 'img/icons/upload.svg' %}" alt="img">
+                             <h4>Drag and drop a file to upload</h4>
+                             <div id="preview" style="display: none; position: relative; margin-top: 15px;">
+                             <button type="button" id="deleteImage" class="btn btn-sm btn-danger"  style="position: absolute; top: -10px; right: -10px; border-radius: 50%; width: 25px; height: 25px; padding: 0;">
+                                     ×
+                                    
+                                 </button>
+                                <img id="imagePreview" src="#" alt="Preview" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; padding: 5px;">
+                              </div>
+                             </div>
+                           </div></div>
+
+                        <!-- Submit and Cancel Buttons -->
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-submit me-2">Submit</button>
+                            <a href="productlist" class="btn btn-cancel">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const imageInput = document.querySelector('input[type="file"]');
+const preview = document.getElementById('imagePreview');
+const previewDiv = document.getElementById('preview');
+const deleteBtn = document.getElementById('deleteImage');
+
+function handleImageSelect(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewDiv.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function deleteImage() {
+    imageInput.value = '';
+    preview.src = '#';
+    previewDiv.style.display = 'none';
+}
+
+imageInput.addEventListener('change', handleImageSelect);
+deleteBtn.addEventListener('click', deleteImage);
+</script>
+{% endblock %}

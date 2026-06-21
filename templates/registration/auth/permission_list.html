@@ -1,0 +1,57 @@
+{% extends 'home/base.html' %} {% load static %} {% block title %}Create Group{% endblock %} {% block content %}
+<div class="page-wrapper">
+<div class="container mt-4">
+    <h2>Permissions List</h2>
+    
+    <!-- Search Form -->
+    <form method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" 
+                   placeholder="Search permissions..." value="{{ search_query }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+    
+    <!-- Permissions by App -->
+    {% for app_label, permissions in permissions_by_app.items %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">{{ app_label|title }}</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Codename</th>
+                        <th>Model</th>
+                        <th>Groups</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for permission in permissions %}
+                    <tr>
+                        <td>{{ permission.name }}</td>
+                        <td><code>{{ permission.codename }}</code></td>
+                        <td>{{ permission.content_type.model }}</td>
+                        <td>
+                            {% for group in permission.group_set.all %}
+                            <span class="badge bg-primary">{{ group.name }}</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">
+        No permissions found matching your search criteria.
+    </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

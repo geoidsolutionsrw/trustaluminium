@@ -1,0 +1,331 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Edit Sale{% endblock %}
+{% block content %}
+
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Edit Sale</h4>
+        <h6>Update sale #{{ sale.sale_id }}</h6>
+      </div>
+    </div>
+
+    <form id="saleForm" method="post">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-body">
+
+          <!-- ── Header fields ── -->
+          <div class="row">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Customer</label>
+                <select class="select" name="customer" id="customer" required>
+                  <option value="">Choose Customer</option>
+                  {% for c in customers %}
+                    <option value="{{ c.cust_id }}"
+                      {% if c.cust_id == sale.customer_id %}selected{% endif %}>
+                      {{ c.customer_name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Date</label>
+                <div class="input-groupicon">
+                  <input type="date" name="sale_date" id="sale_date"
+                         class="form-control" required
+                         value="{{ sale.date|date:'Y-m-d' }}" />
+                  <a class="addonset">
+                    <img src="{% static 'img/icons/calendars.svg' %}" alt="calendar" />
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Payment Status</label>
+                <select class="select" name="payment_status" required>
+                  <option value="">Select Status</option>
+                  <option value="FULL"    {% if sale.payment_status == 'FULL'    %}selected{% endif %}>Full Payment</option>
+                  <option value="PARTIAL" {% if sale.payment_status == 'PARTIAL' %}selected{% endif %}>Partial Payment</option>
+                  <option value="PENDING" {% if sale.payment_status == 'PENDING' %}selected{% endif %}>Pending</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Add product row ── -->
+          <div class="row g-2 mb-3 align-items-end"
+               style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px 8px;">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group mb-0">
+                <label style="font-size:.82rem;">Product Name</label>
+                <select class="form-control select2" id="product_select">
+                  <option value="">Select Product</option>
+                  {% for product in products %}
+                    <option value="{{ product.productid }}"
+                            data-price="{{ product.price|default:0 }}"
+                            data-stock="{{ product.quantity|default:0 }}"
+                            data-name="{{ product.product_name }}">
+                      {{ product.product_name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label style="font-size:.82rem;">Price</label>
+                <input type="number" step="0.01" id="price"
+                       class="form-control" readonly placeholder="0.00" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label style="font-size:.82rem;">Quantity</label>
+                <input type="number" id="quantity" class="form-control"
+                       min="1" placeholder="1" />
+                <small class="text-muted" id="stock-info"></small>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label style="font-size:.82rem;">Tax (%)</label>
+                <input type="number" step="0.01" id="tax"
+                       class="form-control" value="0" placeholder="0" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0 mt-4">
+                <div class="page-btn">
+                  <button type="button" class="btn btn-added w-100"
+                          id="add-product">
+                    <img src="{% static 'img/icons/plus.svg' %}" alt="add"
+                         style="width:14px;" class="me-1" />Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Products table ── -->
+          <div class="row">
+            <div class="table-responsive mb-3">
+              <table class="table" id="products-table">
+                <thead style="background:#f3f2f7;">
+                  <tr>
+                    <th style="color:#5e5873;font-size:13px;padding:10px;">#</th>
+                    <th style="color:#5e5873;font-size:13px;padding:10px;">Product Name</th>
+                    <th style="color:#5e5873;font-size:13px;padding:10px;">QTY</th>
+                    <th style="color:#5e5873;font-size:13px;padding:10px;">Price</th>
+                    <th style="color:#5e5873;font-size:13px;padding:10px;">Tax %</th>
+                    <th style="color:#5e5873;font-size:13px;padding:10px;">Subtotal</th>
+                    <th style="color:#5e5873;font-size:13px;padding:10px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="products-tbody">
+                  <tr id="empty-row">
+                    <td colspan="7" class="text-center text-muted py-3">
+                      No products added yet
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── Totals ── -->
+          <div class="row">
+            <div class="col-lg-6 ms-auto">
+              <div class="total-order w-100 max-widthauto m-auto mb-4">
+                <ul>
+                  <li>
+                    <h4>Tax Total</h4>
+                    <h5><span id="total-tax">0.00</span> Rwf</h5>
+                  </li>
+                  <li class="total">
+                    <h4>Grand Total</h4>
+                    <h5>Rwf <span id="grand-total">0.00</span></h5>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Buttons ── -->
+          <div class="col-lg-12">
+            <button type="submit" class="btn btn-submit me-2">Save Changes</button>
+            <a href="{% url 'saleslist' %}" class="btn btn-cancel">Cancel</a>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+  const productSelect = document.getElementById('product_select');
+  const priceInput    = document.getElementById('price');
+  const quantityInput = document.getElementById('quantity');
+  const taxInput      = document.getElementById('tax');
+  const stockInfo     = document.getElementById('stock-info');
+  const addBtn        = document.getElementById('add-product');
+  const tbody         = document.getElementById('products-tbody');
+  const saleForm      = document.getElementById('saleForm');
+
+  let products = [];
+
+  // ── Prefill existing products ──────────────────────────────────────────
+  const existingProducts = {{ existing_products|safe }};
+  if (existingProducts.length > 0) {
+    products = existingProducts.map(p => ({
+      id:       p.id,
+      name:     p.name,
+      quantity: p.quantity,
+      price:    p.price,
+      tax:      p.tax,
+      subtotal: p.subtotal,
+    }));
+    renderTable();
+  }
+
+  // ── Product select change ──────────────────────────────────────────────
+  productSelect.addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    if (opt.value) {
+      priceInput.value         = opt.dataset.price || '';
+      stockInfo.textContent    = opt.dataset.stock
+        ? `Available: ${opt.dataset.stock}` : '';
+      quantityInput.value      = '';
+      quantityInput.max        = opt.dataset.stock;
+      taxInput.value           = '0';
+    } else {
+      resetForm();
+    }
+  });
+
+  // ── Add product ────────────────────────────────────────────────────────
+  addBtn.addEventListener('click', function() {
+    const opt = productSelect.options[productSelect.selectedIndex];
+    if (!opt.value || !quantityInput.value) {
+      alert('Please select a product and enter quantity.');
+      return;
+    }
+    const qty      = parseInt(quantityInput.value);
+    const price    = parseFloat(priceInput.value);
+    const tax      = parseFloat(taxInput.value || 0);
+    const subtotal = qty * price * (1 + tax / 100);
+
+    products.push({
+      id:       opt.value,
+      name:     opt.dataset.name || opt.text,
+      quantity: qty,
+      price:    price,
+      tax:      tax,
+      subtotal: subtotal,
+    });
+    renderTable();
+    resetForm();
+  });
+
+  // ── Render table ───────────────────────────────────────────────────────
+  function renderTable() {
+    if (products.length === 0) {
+      tbody.innerHTML = `<tr id="empty-row">
+        <td colspan="7" class="text-center text-muted py-3">No products added yet</td>
+      </tr>`;
+      updateTotals();
+      return;
+    }
+    tbody.innerHTML = products.map((p, i) => `
+      <tr style="border-bottom:1px solid #e9ecef;">
+        <td style="padding:10px;color:#9ca3af;">${i + 1}</td>
+        <td style="padding:10px;color:#555;font-weight:500;">${esc(p.name)}</td>
+        <td style="padding:10px;">${p.quantity}</td>
+        <td style="padding:10px;">${p.price.toFixed(0)}</td>
+        <td style="padding:10px;">${p.tax}%</td>
+        <td style="padding:10px;color:#2e7d32;font-weight:500;">${p.subtotal.toFixed(0)} Rwf</td>
+        <td style="padding:10px;">
+          <button type="button" class="btn btn-danger btn-sm"
+                  onclick="removeProduct(${i})">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>`).join('');
+    updateTotals();
+  }
+
+  function removeProduct(i) {
+    products.splice(i, 1);
+    renderTable();
+  }
+
+  // ── Totals ─────────────────────────────────────────────────────────────
+  function updateTotals() {
+    const taxTotal   = products.reduce((s, p) => s + (p.quantity * p.price * p.tax / 100), 0);
+    const grandTotal = products.reduce((s, p) => s + p.subtotal, 0);
+    document.getElementById('total-tax').textContent  = taxTotal.toFixed(2);
+    document.getElementById('grand-total').textContent = grandTotal.toFixed(0);
+  }
+
+  // ── Reset add row ──────────────────────────────────────────────────────
+  function resetForm() {
+    productSelect.value  = '';
+    priceInput.value     = '';
+    quantityInput.value  = '';
+    taxInput.value       = '0';
+    stockInfo.textContent = '';
+  }
+
+  // ── Submit ─────────────────────────────────────────────────────────────
+  saleForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (products.length === 0) {
+      alert('Please add at least one product.');
+      return;
+    }
+    const btn = this.querySelector('.btn-submit');
+    btn.disabled    = true;
+    btn.textContent = 'Saving…';
+
+    const fd = new FormData(this);
+    fd.append('products', JSON.stringify(products));
+
+    fetch('{% url "edit_sales" sale.sale_id %}', {
+      method: 'POST',
+      body:   fd,
+      headers: { 'X-CSRFToken': this.querySelector('[name=csrfmiddlewaretoken]').value }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = data.redirect_url || '{% url "saleslist" %}';
+      } else {
+        alert(data.error || 'An error occurred.');
+        btn.disabled    = false;
+        btn.textContent = 'Save Changes';
+      }
+    })
+    .catch(() => {
+      alert('Network error. Please try again.');
+      btn.disabled    = false;
+      btn.textContent = 'Save Changes';
+    });
+  });
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+{% endblock %}

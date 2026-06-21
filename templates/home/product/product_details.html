@@ -1,0 +1,98 @@
+{% extends 'home/base.html' %} 
+{% load static %} 
+{% block title %} product Detail {% endblock %} 
+{% block content %}
+
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Product Details</h4>
+        <h6>Full details of a product</h6>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8 col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="bar-code-view">
+              <img src= "{% static 'img/barcode1.png' %}" alt="barcode" />
+              <a class="printimg">
+                <img src= "{% static 'img/icons/printer.svg' %}" alt="print" />
+              </a>
+            </div>
+            <div class="productdetails">
+            
+              <ul class="product-bar">
+                <li>
+                  <h4>Product ID</h4>
+                  <h6>{{ prodetail.productid }}</h6>
+                </li>
+                <li>
+                  <h4>Product</h4>
+                  <h6>{{ prodetail.product_name }}</h6>
+                </li>
+                <li>
+                  <h4>Category</h4>
+                  <h6>{{ prodetail.category }}</h6>
+                </li>
+                <li>
+                  <h4>Sub Category</h4>
+                  <h6>None</h6>
+                </li>
+                <li>
+                  <h4>Brand</h4>
+                  <h6>{{ prodetail.brand }}</h6>
+                </li>
+                <li>
+                  <h4>Price</h4>
+                  <h6>{{ prodetail.price }}</h6>
+                </li>
+                <li>
+                  <h4>SKU</h4>
+                  <h6>{{ prodetail.productid }}</h6>
+                </li>
+
+                <li>
+                  <h4>Description</h4>
+                  <h6>
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s,
+                  </h6>
+                </li>
+              </ul>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="slider-product-details">
+              <div class="owl-carousel owl-theme product-slide">
+                <div class="slider-product">
+                  {% if prodetail.image %}
+                    <img src="{{ prodetail.image.url }}" alt="img">
+                  {% else %}
+                     <img src="{% static 'img/noimage.png' %}" alt="default">
+                  {% endif %}
+                  <h4>{{ prodetail.product_name }}</h4>
+                  <h6>Trust Image</h6>
+                </div>
+                {% comment %} <div class="slider-product">
+                  <img src="{% static 'img/product/product69.jpg' %}" alt="img" />
+                  <h4>macbookpro.jpg</h4>
+                  <h6>581kb</h6>
+                </div> {% endcomment %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

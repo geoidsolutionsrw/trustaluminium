@@ -1,0 +1,542 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Contact Us — Trust Aluminium</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    :root {
+      --navy:   #1E2D40;
+      --orange: #F07B22;
+      --light:  #F8FAFC;
+      --border: #E5E7EB;
+      --text:   #1a202c;
+      --muted:  #6B7280;
+      --white:  #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      color: var(--text);
+      background: var(--white);
+    }
+
+    h1, h2, h3, h4 { font-family: 'Nunito Sans', sans-serif; }
+
+    /* ── NAVBAR ─────────────────────────────── */
+    .navbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .navbar-brand {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--navy) !important;
+      letter-spacing: 0.04em;
+    }
+    .navbar-brand span { color: var(--orange); }
+    .nav-link {
+      color: var(--muted) !important;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.4rem 1rem !important;
+      transition: color .2s;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--navy) !important; }
+    .btn-nav-quote {
+      background: var(--orange);
+      color: var(--white) !important;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.45rem 1.2rem !important;
+      border-radius: 6px;
+      transition: background .2s;
+    }
+    .btn-nav-quote:hover { background: #d96a14; }
+
+    /* ── PAGE HEADER ────────────────────────── */
+    .page-header {
+      background: var(--navy);
+      padding: 3.5rem 0 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--orange);
+    }
+    .page-header-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--orange);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .page-header-eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--orange);
+    }
+    .page-header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 0.8rem;
+      line-height: 1.1;
+    }
+    .page-header p {
+      color: rgba(255,255,255,0.6);
+      font-size: 1rem;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    /* ── CONTACT INFO CARDS ─────────────────── */
+    .contact-section { padding: 4rem 0; background: var(--light); }
+
+    .contact-info-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.6rem;
+      height: 100%;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: all .25s;
+    }
+    .contact-info-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-3px);
+    }
+    .contact-icon {
+      width: 48px; height: 48px;
+      background: var(--navy);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-icon i { font-size: 1.3rem; color: var(--orange); }
+    .contact-card-body h5 {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.3rem;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+    .contact-card-body p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+    .contact-card-body a {
+      color: var(--orange);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contact-card-body a:hover { text-decoration: underline; }
+
+    /* ── MAP + FORM SECTION ─────────────────── */
+    .map-form-section { padding: 0 0 4rem; background: var(--light); }
+
+    .map-wrap {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      height: 100%;
+      min-height: 480px;
+    }
+    .map-wrap iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 480px;
+      display: block;
+      border: none;
+    }
+
+    /* ── CONTACT FORM ───────────────────────── */
+    .contact-form-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+    }
+    .contact-form-card h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+    .contact-form-card .subtitle {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .form-label {
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+    .form-control, .form-select {
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.88rem;
+      color: var(--text);
+      font-family: 'Nunito Sans', sans-serif;
+      transition: border-color .2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(240,123,34,0.12);
+      outline: none;
+    }
+    .form-control::placeholder { color: #b0b8c4; }
+    .btn-contact-submit {
+      background: var(--orange);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 0.75rem;
+      border-radius: 7px;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      transition: background .2s;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+    .btn-contact-submit:hover { background: #d96a14; }
+    .alert-success-c {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    /* ── HOURS BADGE ────────────────────────── */
+    .hours-badge {
+      background: var(--navy);
+      border-radius: 10px;
+      padding: 1.4rem 1.6rem;
+      margin-top: 1.2rem;
+    }
+    .hours-badge h6 {
+      color: var(--orange);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.84rem;
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-day { color: rgba(255,255,255,0.55); }
+    .hours-time { color: var(--white); font-weight: 500; }
+    .hours-time.closed { color: rgba(255,255,255,0.3); font-style: italic; }
+
+    /* ── DIRECTIONS BTN ─────────────────────── */
+    .btn-directions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--orange);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: background .2s;
+    }
+    .btn-directions:hover { background: #d96a14; color: var(--white); }
+    .btn-directions i { font-size: 1.1rem; }
+
+    /* ── FOOTER ─────────────────────────────── */
+    .orange-line { height: 4px; background: var(--orange); }
+    footer {
+      background: var(--navy);
+      padding: 2rem 0 1.2rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .footer-bottom {
+      font-size: 0.82rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .footer-bottom a {
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+    }
+    .footer-bottom a:hover { color: var(--orange); }
+    .footer-brand {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .footer-brand span { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ───────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="/">TRUST <span>ALUMINIUM</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="/#products">Products</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/contactus">Contact</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link btn-nav-quote" href="/#quotation">Request Quote</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ── PAGE HEADER ──────────────────────────────────── -->
+<div class="page-header">
+  <div class="container">
+    <div class="page-header-eyebrow">Get in touch</div>
+    <h1>Contact Us</h1>
+    <p>We're here to help. Reach out for product enquiries, quotations, or to visit our store in Kigali.</p>
+  </div>
+</div>
+
+<!-- ── CONTACT INFO CARDS ────────────────────────────── -->
+<section class="contact-section">
+  <div class="container">
+    <div class="row g-3 mb-5">
+      <div class="col-lg-3 col-md-6">
+        <div class="contact-info-card">
+          <div class="contact-icon"><i class='bx bx-map'></i></div>
+          <div class="contact-card-body">
+            <h5>Our Location</h5>
+            <p>Kigali — Remera<br>KK 13 Ave, Rwanda</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="contact-info-card">
+          <div class="contact-icon"><i class='bx bx-phone'></i></div>
+          <div class="contact-card-body">
+            <h5>Phone</h5>
+            <p><a href="tel:+250785737917">+250 785 737 917</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="contact-info-card">
+          <div class="contact-icon"><i class='bx bx-envelope'></i></div>
+          <div class="contact-card-body">
+            <h5>Email</h5>
+            <p><a href="mailto:trustaluminiumrw@gmail.com">trustaluminiumrw@gmail.com</a></p>
+          </div>
+        </div>
+      </div>
+      {% comment %} <div class="col-lg-3 col-md-6">
+        <div class="contact-info-card">
+          <div class="contact-icon"><i class='bx bx-id-card'></i></div>
+          <div class="contact-card-body">
+            <h5>Business Info</h5>
+            <p>TIN: 108592160<br>BK A/C: 000420774665346</p>
+          </div>
+        </div>
+      </div> {% endcomment %}
+    </div>
+
+    <!-- ── MAP + FORM ─────────────────────────────────── -->
+    <div class="map-form-section">
+      <div class="row g-4">
+
+        <!-- Map column -->
+        <div class="col-lg-6">
+          <div class="map-wrap">
+            <!-- Google Maps embed — Trust Aluminium location: Remera, Kigali -->
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.505!2d30.1189239!3d-1.9549659!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca4258ed8e38b%3A0x82b5b72fc8e2d0b3!2sRemera%2C%20Kigali!5e0!3m2!1sen!2srw!4v1700000000000"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Trust Aluminium Store Location">
+            </iframe>
+          </div>
+          <a href="https://www.google.com/maps/@-1.9549659,30.1189239,68m/data=!3m1!1e3"
+             target="_blank" rel="noopener" class="btn-directions">
+            <i class='bx bx-current-location'></i>
+            Get Directions to Our Store
+          </a>
+          <div class="hours-badge">
+            <h6>Business Hours</h6>
+            <div class="hours-row">
+              <span class="hours-day">Monday — Friday</span>
+              <span class="hours-time">8:00 AM — 6:00 PM</span>
+            </div>
+            <div class="hours-row">
+              <span class="hours-day">Saturday</span>
+              <span class="hours-time">9:00 AM — 4:00 PM</span>
+            </div>
+            {% comment %} <div class="hours-row">
+              <span class="hours-day">Sunday</span>
+              <span class="hours-time closed">Closed</span>
+            </div> {% endcomment %}
+          </div>
+        </div>
+
+        <!-- Contact form column -->
+        <div class="col-lg-6">
+          <div class="contact-form-card">
+            <h3>Send us a message</h3>
+            <p class="subtitle">
+              Fill in the form below and we'll get back to you within 24 hours
+              on business days.
+            </p>
+
+            <div class="alert-success-c" id="contactSuccess">
+              <i class='bx bx-check-circle' style="margin-right:6px;"></i>
+              Message sent! We'll be in touch within 24 hours.
+            </div>
+
+            <form id="contactForm">
+              {% csrf_token %}
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" class="form-control" placeholder="Your full name" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Phone Number *</label>
+                  <input type="text" class="form-control" placeholder="+250 7XX XXX XXX" required />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" class="form-control" placeholder="your@email.com" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Subject</label>
+                  <select class="form-select">
+                    <option value="">— Select a topic —</option>
+                    <option>Product enquiry</option>
+                    <option>Request a quotation</option>
+                    <option>Order follow-up</option>
+                    <option>Technical support</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Message *</label>
+                  <textarea class="form-control" rows="5"
+                            placeholder="Tell us how we can help you…" required></textarea>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn-contact-submit">
+                    <i class='bx bx-send' style="margin-right:6px; vertical-align:-2px;"></i>
+                    Send Message
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Quick contact alternatives -->
+            <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+              <p style="font-size:0.82rem; color:var(--muted); margin-bottom:0.8rem;">Or reach us directly:</p>
+              <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <a href="tel:+250785737917"
+                   style="display:flex;align-items:center;gap:6px;background:var(--light);border:1px solid var(--border);border-radius:7px;padding:0.5rem 1rem;font-size:0.84rem;color:var(--navy);font-weight:500;text-decoration:none;">
+                  <i class='bx bx-phone' style="color:var(--orange);font-size:1rem;"></i> Call us
+                </a>
+                <a href="mailto:trustaluminiumrw@gmail.com"
+                   style="display:flex;align-items:center;gap:6px;background:var(--light);border:1px solid var(--border);border-radius:7px;padding:0.5rem 1rem;font-size:0.84rem;color:var(--navy);font-weight:500;text-decoration:none;">
+                  <i class='bx bx-envelope' style="color:var(--orange);font-size:1rem;"></i> Email us
+                </a>
+                <a href="/#quotation"
+                   style="display:flex;align-items:center;gap:6px;background:var(--navy);border:1px solid var(--navy);border-radius:7px;padding:0.5rem 1rem;font-size:0.84rem;color:#fff;font-weight:500;text-decoration:none;">
+                  <i class='bx bx-file' style="color:var(--orange);font-size:1rem;"></i> Request quote
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<div class="orange-line"></div>
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <span><span class="footer-brand">TRUST <span>ALUMINIUM</span></span> &nbsp;·&nbsp; © 2025 All rights reserved.</span>
+      <a href="/login">Staff Login</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.btn-contact-submit');
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+    setTimeout(() => {
+      document.getElementById('contactSuccess').style.display = 'block';
+      this.reset();
+      btn.disabled    = false;
+      btn.innerHTML   = '<i class="bx bx-send" style="margin-right:6px;vertical-align:-2px;"></i>Send Message';
+    }, 800);
+  });
+</script>
+</body>
+</html>

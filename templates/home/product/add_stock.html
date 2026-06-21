@@ -1,0 +1,183 @@
+# templates/sales/add_sale.html {% extends 'home/base.html' %} {% load static %}
+{% block title %}Add Sale{% endblock %} {% block content %}
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Add Stock</h4>
+        <h6>Add your stock</h6>
+      </div>
+    </div>
+    <form id="saleForm" method="post">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-body">
+
+
+          <!-- Product Addition Form -->
+          <div class="row" id="product-form">
+             <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Product Name</label>
+                <select class="form-control select2" id="product_select">
+                  <option value="">Select Product</option>
+                  {% for product in products %}
+                  <option
+                    value="{{ product.productid }}">
+                    {{ product.product_name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+                <div class="col-lg-4 col-sm-6 col-12">
+                  <div class="form-group">
+                  <label>Quantity</label>
+                  <input
+                  type="number"
+                  id="stock_quantity"
+                  class="form-control"
+                  min="1"/>
+                   <small class="text-muted" id="stock-info"></small>
+                </div>
+            
+
+             </div>
+
+              <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                <div class="form-group mt-4">
+                <div class=" page-btn ">
+                     <span><img class="add-icon btn btn-added btn-primary" src="{% static 'img/icons/plus.svg' %}" alt="img"/></span>
+                  </div>
+              </div>
+              </div>
+
+          </div>
+          <!-- Products Table -->
+          <div class="row">
+            <div class="table-responsive mb-3">
+              <table class="table" id="products-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th>QTY</th>
+
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Submit Buttons -->
+          <div class="col-lg-12">
+            <button type="submit" href="{% url 'productlist' %}" class="btn btn-submit me-2">Submit</button>
+            <a href="{% url 'productlist' %}" class="btn btn-cancel">Cancel</a
+            >
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+// Add this JavaScript to your template or a separate .js file
+document.addEventListener('DOMContentLoaded', function() {
+    const productSelect = document.getElementById('product_select');
+    const quantityInput = document.getElementById('stock_quantity');
+    const addButton = document.querySelector('.add-icon');
+    const productsTable = document.getElementById('products-table').getElementsByTagName('tbody')[0];
+    const form = document.getElementById('saleForm');
+    
+    let stockItems = [];
+    let rowCounter = 1;
+
+    // Add item to table
+    addButton.addEventListener('click', function() {
+        const productId = productSelect.value;
+        const productName = productSelect.options[productSelect.selectedIndex].text;
+        const quantity = quantityInput.value;
+
+        if (!productId || !quantity || quantity <= 0) {
+            alert('Please select a product and enter a valid quantity');
+            return;
+        }
+
+        // Add to stockItems array
+        stockItems.push({
+            product_id: productId,
+            quantity: quantity
+        });
+
+        // Add row to table
+        const row = productsTable.insertRow();
+        row.innerHTML = `
+            <td>${rowCounter}</td>
+            <td>${productName}</td>
+            <td>${quantity}</td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm delete-row">
+                    Remove
+                </button>
+            </td>
+        `;
+
+        rowCounter++;
+
+        // Clear inputs
+        productSelect.value = '';
+        quantityInput.value = '';
+    });
+
+    // Remove item from table
+    productsTable.addEventListener('click', function(e) {
+        if (e.target.classList.contains('delete-row')) {
+            const row = e.target.closest('tr');
+            const index = row.rowIndex - 1;
+            stockItems.splice(index, 1);
+            row.remove();
+            
+            // Update row numbers
+            Array.from(productsTable.rows).forEach((row, idx) => {
+                row.cells[0].textContent = idx + 1;
+            });
+            rowCounter--;
+        }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (stockItems.length === 0) {
+            alert('Please add at least one item');
+            return;
+        }
+
+        // Create form data
+        const formData = new FormData();
+        formData.append('stock_items', JSON.stringify(stockItems));
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+        // Submit data
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                window.location.href = '/productlist';  // Redirect to stock list page
+            } else {
+                alert('Error saving stock items: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error saving stock items: ' + error);
+        });
+    });
+});
+</script>
+{% endblock %}

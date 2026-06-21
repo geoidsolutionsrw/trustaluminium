@@ -1,0 +1,409 @@
+# templates/sales/add_sale.html {% extends 'home/base.html' %} {% load static %}
+{% block title %}Add Sale{% endblock %} {% block content %}
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Add Quotation</h4>
+        <h6>Add your new quote</h6>
+      </div>
+    </div>
+    <form id="saleForm" method="post">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-body">
+          <!-- Customer and Date Selection -->
+          <div class="row">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Customer</label>
+                <div class="row">
+                  <div class="col-lg-10 col-sm-10 col-10">
+                    <select
+                      class="select2"
+                      name="customer"
+                      id="customer"
+                      required
+                    >
+                      <option value="">Choose Customer</option>
+                      {% for customer in customers %}
+                      <option value="{{ customer.cust_id }}">
+                        {{ customer.customer_name }}
+                      </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Date</label>
+                <div class="input-groupicon"><input
+                    type="datetime-local"
+                    name="quotation_date"
+                    id="quotation_date"
+                    class="form-control" 
+                  value="{% now 'Y-m-d\\TH:i' %}"/> 
+                  <a class="addonset">
+                    <img
+                      src="{% static 'img/icons/calendars.svg' %}"
+                      alt="calendar"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Addition Form -->
+          <div class="row" id="product-form">
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Product Name</label>
+                <select class="form-control select2" id="product_select">
+                  <option value="">Select Product</option>
+                  {% for product in products %}
+                  <option
+                    value="{{ product.productid }}"
+                    data-price="{{ product.price }}"
+                    data-stock="{{ product.quantity }}"
+                  >
+                    {{ product.product_name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Price</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  id="price"
+                  class="form-control"
+                  
+                />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Quantity</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  class="form-control"
+                  min="1"
+                />
+                <small class="text-muted" id="stock-info"></small>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Tax (%)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  id="tax"
+                  class="form-control"
+                  value="0"
+                />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+              <div class="form-group mt-4">
+                <div class=" page-btn ">
+                     <span><img class="add-icon btn btn-added btn-primary" src="{% static 'img/icons/plus.svg' %}" alt="img"/></span>
+                  </div>
+              </div>
+
+          </div>
+          <!-- Products Table -->
+          <div class="row">
+            <div class="table-responsive mb-3">
+              <table class="table" id="products-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th>QTY</th>
+                    <th>Price</th>
+                    <th>Tax</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Status Selection -->
+          <div class="row">
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Status</label>
+                <select class="select" name="quotation_status" required>
+                  <option value="">Select Quotation Status</option>
+                 <option value="ACCEPTED">ACCEPTED</option>
+                 <option value="MODIFICATION REQUESTED">MODIFICATION REQUESTED</option>
+                 <option value="PENDING">PENDING</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Totals Section -->
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="total-order w-100 max-widthauto m-auto mb-4">
+                <ul>
+                  <li>
+                    <h4>Tax</h4>
+                    <h5> <span id="total-tax">0.00</span> RWF</h5>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="total-order w-100 max-widthauto m-auto mb-4">
+                <ul>
+                  <li class="total">
+                    <h4>Grand Total</h4>
+                    <h5>RWF <span id="grand-total">0.00</span></h5>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="col-lg-12">
+            <button type="submit" href="{% url 'saleslist' %}" class="btn btn-submit me-2">Submit</button>
+            <a href="{% url 'saleslist' %}" class="btn btn-cancel">Cancel</a
+            >
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get DOM elements
+    const productSelect = document.getElementById('product_select');
+    const priceInput = document.getElementById('price');
+    const quantityInput = document.getElementById('quantity');
+    const stockInfo = document.getElementById('stock-info');
+    const taxInput = document.getElementById('tax');
+    const productsTable = document.getElementById('products-table');
+    const addBtn = document.querySelector('.btn-added');
+    const saleForm = document.getElementById('saleForm');
+
+    // Store products array
+    let products = [];
+
+// Update price and stock info when product is selected
+productSelect.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    if (selectedOption.value) {
+        const price = selectedOption.dataset.price;
+        const productId = selectedOption.value;
+
+        // Fetch available stock via AJAX
+        fetch(`/get-available-stock/${productId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const availableStock = data.available_stock;
+
+                priceInput.value = price || '';
+                stockInfo.textContent = `Available stock: ${availableStock}`;
+                
+                // Reset and set max quantity
+                quantityInput.value = '';
+                quantityInput.max = availableStock;
+                taxInput.value = '0';
+            })
+            .catch(error => {
+                console.error('Error fetching stock:', error);
+                stockInfo.textContent = 'Unable to fetch stock';
+            });
+    } else {
+        resetProductForm();
+    }
+});
+
+// Validate quantity against stock
+quantityInput.addEventListener('input', function() {
+    const selectedOption = productSelect.options[productSelect.selectedIndex];
+    const productId = selectedOption.value;
+    const quantity = parseInt(this.value);
+
+    // Fetch available stock via AJAX for validation
+    fetch(`/get-available-stock/${productId}/`)
+        .then(response => response.json())
+        .then(data => {
+            const availableStock = data.available_stock;
+
+            if (quantity > availableStock) {
+                this.value = availableStock;
+                alert(`Maximum available stock is ${availableStock}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching stock:', error);
+        });
+});
+
+    // Add product to table
+    addBtn.addEventListener('click', function() {
+        const selectedOption = productSelect.options[productSelect.selectedIndex];
+        if (!selectedOption.value || !quantityInput.value) {
+            alert('Please select a product and enter quantity');
+            return;
+        }
+
+        const product = {
+            id: selectedOption.value,
+            name: selectedOption.text,
+            quantity: parseInt(quantityInput.value),
+            price: parseFloat(priceInput.value),
+            tax: parseFloat(taxInput.value || 0)
+        };
+
+        // Calculate subtotal
+        product.subtotal = calculateSubtotal(product);
+        products.push(product);
+        
+        // Update table
+        updateProductsTable();
+        // Update totals
+        updateTotals();
+        // Reset form
+        resetProductForm();
+    });
+
+    // Calculate subtotal for a product
+    function calculateSubtotal(product) {
+        const baseAmount = product.quantity * product.price;
+        const taxAmount = baseAmount * (product.tax / 100);
+        return baseAmount + taxAmount;
+    }
+
+    // Update products table
+    function updateProductsTable() {
+        const tbody = productsTable.querySelector('tbody');
+        tbody.innerHTML = '';
+
+        products.forEach((product, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${product.name}</td>
+                <td>${product.quantity}</td>
+                <td>${product.price.toFixed(0)}</td>
+                <td>${product.tax}%</td>
+                <td>${product.subtotal.toFixed(0)} RWF</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm delete-product" data-index="${index}">
+                        Delete
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        // Add delete event listeners
+        document.querySelectorAll('.delete-product').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.dataset.index);
+                products.splice(index, 1);
+                updateProductsTable();
+                updateTotals();
+            });
+        });
+    }
+
+    // Update total amounts
+    function updateTotals() {
+        const totalTax = products.reduce((sum, product) => {
+            const baseAmount = product.quantity * product.price;
+            return sum + (baseAmount * (product.tax / 100));
+        }, 0);
+
+        const grandTotal = products.reduce((sum, product) => sum + product.subtotal, 0);
+
+        document.getElementById('total-tax').textContent = totalTax.toFixed(2);
+        document.getElementById('grand-total').textContent = grandTotal.toFixed(2);
+    }
+
+    // Reset product form
+    function resetProductForm() {
+        productSelect.value = '';
+        priceInput.value = '';
+        quantityInput.value = '';
+        taxInput.value = '0';
+        stockInfo.textContent = '';
+    }
+
+    // Form submission
+    saleForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (products.length === 0) {
+            alert('Please add at least one product');
+            return;
+        }
+
+        const formData = new FormData(this);
+        formData.append('products', JSON.stringify(products));
+
+        fetch('{% url "add_quotation" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving the sale');
+        });
+    });
+  
+});
+// Time adjustment
+  document.addEventListener('DOMContentLoaded', function () {
+    const dateInput = document.getElementById('quotation_date');
+    if (dateInput) {
+      const now = new Date();
+
+      // Format the date and time as local time
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      // Combine into the required format
+      const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+      dateInput.value = formattedDate;
+    }
+  });
+</script>
+<script src="{% static 'js/sales/select2_init.js' %}"></script>
+{% endblock %} {% endblock %}

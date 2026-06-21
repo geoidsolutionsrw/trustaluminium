@@ -1,0 +1,222 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Add Sale{% endblock %}
+{% block content %}
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Add Sale</h4>
+        <h6>Add your new sale</h6>
+      </div>
+    </div>
+    <form id="saleForm" method="post">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-body">
+          <!-- Customer and Date Selection -->
+          <div class="row">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Customer</label>
+                <select class="select" name="customer" id="customer" required>
+                  <option value="">Choose Customer</option>
+                  {% for customer in customers %}
+                  <option value="{{ customer.cust_id }}">{{ customer.customer_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Date</label>
+                <div class="input-groupicon">
+                  <input type="datetime-local" name="sale_date" id="sale_date" class="form-control" required value="{% now 'Y-m-d\\TH:i:s' %}" />
+                  <a class="addonset">
+                    <img src="{% static 'img/icons/calendars.svg' %}" alt="calendar" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Addition Form -->
+          <div class="row" id="product-form">
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Product Name</label>
+                <select class="form-control select2" id="product_select">
+                  <option value="">Select Product</option>
+                  {% for product in products %}
+                  <option value="{{ product.productid }}" data-price="{{ product.price }}" data-stock="{{ stock_dict|get_item:product.productid }}">
+                    {{ product.product_name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Price</label>
+                <input type="number" step="0.01" id="price" class="form-control" readonly />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" id="quantity" class="form-control" min="1" />
+                <small class="text-muted" id="stock-info"></small>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Tax (%)</label>
+                <input type="number" step="0.01" id="tax" class="form-control" value="0" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group mt-4">
+                <button type="button" class="btn btn-primary" id="add-product">Add Product</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products Table -->
+          <div class="row">
+            <div class="table-responsive mb-3">
+              <table class="table" id="products-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th>QTY</th>
+                    <th>Price</th>
+                    <th>Tax</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Totals Section -->
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="total-order">
+                <ul>
+                  <li>
+                    <h4>Total Tax</h4>
+                    <h5><span id="total-tax">0.00</span> RWF</h5>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="total-order">
+                <ul>
+                  <li class="total">
+                    <h4>Grand Total</h4>
+                    <h5>RWF <span id="grand-total">0.00</span></h5>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="col-lg-12">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{% url 'saleslist' %}" class="btn btn-secondary">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const productSelect = document.getElementById('product_select');
+    const priceInput = document.getElementById('price');
+    const quantityInput = document.getElementById('quantity');
+    const stockInfo = document.getElementById('stock-info');
+    const taxInput = document.getElementById('tax');
+    const productsTable = document.getElementById('products-table').querySelector('tbody');
+    const addProductBtn = document.getElementById('add-product');
+
+    let products = [];
+
+    productSelect.addEventListener('change', function () {
+      const selectedOption = this.options[this.selectedIndex];
+      if (selectedOption.value) {
+        priceInput.value = selectedOption.dataset.price || '';
+        stockInfo.textContent = `Available stock: ${selectedOption.dataset.stock || 'N/A'}`;
+        quantityInput.value = '';
+        taxInput.value = '0';
+      } else {
+        resetProductForm();
+      }
+    });
+
+    addProductBtn.addEventListener('click', function () {
+      const productId = productSelect.value;
+      const productName = productSelect.options[productSelect.selectedIndex]?.text;
+      const price = parseFloat(priceInput.value);
+      const quantity = parseInt(quantityInput.value);
+      const tax = parseFloat(taxInput.value) || 0;
+
+      if (!productId || !quantity || isNaN(price)) {
+        alert('Please fill in all product details.');
+        return;
+      }
+
+      const subtotal = (price * quantity) + ((price * quantity) * (tax / 100));
+      products.push({ productId, productName, price, quantity, tax, subtotal });
+
+      updateTable();
+    });
+
+    function updateTable() {
+      productsTable.innerHTML = '';
+      let totalTax = 0, grandTotal = 0;
+
+      products.forEach((product, index) => {
+        totalTax += (product.price * product.quantity * (product.tax / 100));
+        grandTotal += product.subtotal;
+
+        const row = `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${product.productName}</td>
+            <td>${product.quantity}</td>
+            <td>${product.price.toFixed(2)}</td>
+            <td>${product.tax.toFixed(2)}</td>
+            <td>${product.subtotal.toFixed(2)}</td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeProduct(${index})">Remove</button></td>
+          </tr>
+        `;
+        productsTable.insertAdjacentHTML('beforeend', row);
+      });
+
+      document.getElementById('total-tax').textContent = totalTax.toFixed(2);
+      document.getElementById('grand-total').textContent = grandTotal.toFixed(2);
+    }
+
+    window.removeProduct = function (index) {
+      products.splice(index, 1);
+      updateTable();
+    };
+
+    function resetProductForm() {
+      productSelect.value = '';
+      priceInput.value = '';
+      quantityInput.value = '';
+      stockInfo.textContent = '';
+      taxInput.value = '0';
+    }
+  });
+</script>
+{% endblock %}
+{% endblock %}

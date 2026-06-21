@@ -1,0 +1,39 @@
+========= views ===========
+# def editproduct(request, pk):
+#     product = get_object_or_404(Product, pk=pk)
+
+#     if request.method == 'POST':
+#         form = editProductForm(request.POST)
+#         if form.is_valid():
+#             # Update the product with form data
+#             product.product_name = form.cleaned_data['product_name']
+#             product.category = form.cleaned_data['category']
+#             product.brand = form.cleaned_data['brand']
+#             product.price = form.cleaned_data['price']
+#             product.quantity = form.cleaned_data['quantity']
+#             product.save()
+#             return redirect('productlist')
+#     else:
+#         # Pre-fill the form with existing product data
+#         form = editProductForm(initial={
+#             'productid': product.productid,
+#             'product_name': product.product_name,
+#             'category': product.category,
+#             'brand': product.brand,
+#             'price': product.price,
+#             'quantity': product.quantity,
+#         })
+
+#     return render(request, 'home/product/editproduct.html', {'form': form})
+
+forms === ===
+# class editProductForm(forms.Form):
+#     productid = forms.IntegerField(
+#         required=False,
+#         widget=forms.TextInput(attrs={'readonly': 'readonly'})
+#     )
+#     product_name = forms.CharField(max_length=200)
+#     category = forms.CharField(max_length=200)
+#     brand = forms.CharField(max_length=200)
+#     price = forms.DecimalField(max_digits=10, decimal_places=2)  # DecimalField, not IntegerField
+#     quantity = forms.IntegerField()     

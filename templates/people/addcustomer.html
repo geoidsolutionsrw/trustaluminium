@@ -1,0 +1,72 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %}Add Customer{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Customer Management</h4>
+        <h6>Add/Update Customer</h6>
+      </div>
+    </div>
+    <form method="post" action="{% url 'addcustomer' %}">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="{{ form.customer_name.id_for_label }}">Customer Name</label>
+                {{ form.customer_name }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="{{ form.email_address.id_for_label }}">Email</label>
+                {{ form.email_address }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="{{ form.phone_number.id_for_label }}">Phone</label>
+                {{ form.phone_number }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">Address</label>
+                {{ form.address }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="{{ tin.id_for_label }}">TIN</label>
+                {{ form.tin }}
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 col-12">
+              <div class="form-group">
+              <label for ="{{ form.customer_type.name }}" >Customer Type</label>
+              <select class="select" name="{{ form.customer_type.name }}" id="{{ form.customer_type.id_for_label }}">
+        {% for value, label in form.customer_type.field.choices %}
+            <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+    </select>
+    </div>
+
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-submit me-2">Submit</button>
+              <a href="{% url 'customer' %}" class="btn btn-cancel">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

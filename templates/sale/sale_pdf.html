@@ -1,0 +1,118 @@
+<!-- templates/quotation/quotation_pdf.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sale No {{ quotationdetail.sale_id }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            @frame header_frame {
+                -pdf-frame-content: header_content;
+                left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+            }
+            @frame content_frame {
+                left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            color: #555;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .header {
+            color: #7367f0;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .info-section {
+            margin-bottom: 20px;
+        }
+        .info-title {
+            color: #7367f0;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background-color: #f3f2f7;
+            color: #5e5873;
+            font-weight: 600;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .amount {
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div id="header_content">
+        <div class="header">Sale No: {{ saledetail.sale_id }}</div>
+    </div>
+    
+    <div class="content">
+        <table>
+            <tr>
+                <td width="33%">
+                    <div class="info-title"><h4>Trust Aluminium </h4></div>
+                    Kigali-Rwanda<br>
+                    Remera<br>
+                    Phone:0785624510<br>
+                    TIN:14520145<br>
+                </td>
+                <td width="33%">
+                    <div class="info-title">Client's Sales Information</div>
+                    CUSTOMER:{{ saledetail.customer.customer_name }}<br>
+                    TIN: {{ saledetail.customer.tin }}<br>
+                    PHONE:{{ saledetail.customer.phone_number }}<br>
+                    {{ saledetail.sale.date }}
+                </td>
+                <td width="33%">
+                    <div class="info-title">Invoice Info</div>
+                    Reference: {{ saledetail.sale_id }}<br>
+                    Status: {{ saledetail.payment_status }}<br>
+                    <span class="amount">{{ saledetail.total_amount }} RWF</span>
+                    
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>QTY</th>
+                    <th>Price</th>
+                    <th>TAX</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in saleitem %}
+                <tr>
+                    <td>{{ item.product.product_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.tax }}</td>
+                    <td>{{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        <!-- Total Amount -->
+        </table>
+           
+
+</body>
+
+</html>

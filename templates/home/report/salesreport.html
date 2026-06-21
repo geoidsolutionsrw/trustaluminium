@@ -1,0 +1,229 @@
+{% extends 'home/base.html' %} {% load static %} {% block title %}Sales Report{% endblock %} {% block content %}
+
+<div class="page-wrapper">
+  <div class="content">
+   <!-- Header -->
+        <div class="page-header">
+      <div class="page-title">
+        <h4>Sales Report</h4>
+        <h6>Manage your Sales Report</h6>
+      </div>
+    </div> 
+    <!-- Indicator sales per user -->
+      <div class="row">
+        <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget">
+          <div class="dash-widgetimg">
+            <span
+              ><img src="{% static 'img/icons/dash1.svg' %}" alt="img"
+            /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5>
+              <span class="counters" data-count="{{ total_expected_amount }}">2000</span>
+            </h5>
+            <h6>Total Expected Amount</h6>
+          </div>
+        </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash1">
+          <div class="dash-widgetimg">
+            <span
+              ><img src="{% static 'img/icons/dash2.svg' %}" alt="img"
+            /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5>
+              <span class="counters" data-count="{{ paid_sales_today }}">450</span>
+            </h5>
+            <h6>Paid Amount</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash2">
+          <div class="dash-widgetimg">
+            <span
+              ><img src="{% static 'img/icons/dash3.svg' %}" alt="img"
+            /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5>
+              <span class="counters" data-count="{{ balance_sales }}"> 4500 </span> RWF
+            </h5>
+            <h6>Unpaid Amount</h6>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash3">
+          <div class="dash-widgetimg">
+            <span
+              ><img src="{% static 'img/icons/dash4.svg' %}" alt="img"
+            /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ paid_sales_yesterday }}">{{ 45200 }}</span> RWF</h5>
+            <h6>Yesterday Paid Amount</h6>
+          </div>
+        </div>
+      </div>
+
+    
+    <div class="card">
+      <div class="card-body">
+        <div class="table-top">
+          <div class="search-set">
+            <div class="search-path">
+              <a class="btn btn-filter" id="filter_search">
+                <img src="{% static 'img/icons/filter.svg' %}" alt="img" />
+                <span
+                  ><img src="{% static 'img/icons/closes.svg' %}" alt="img"
+                /></span>
+              </a>
+            </div>
+            <div class="search-input">
+              <a class="btn btn-searchset"
+                ><img src="{% static 'img/icons/search-white.svg' %}" alt="img"
+              /></a>
+            </div>
+          </div>
+          <div class="wordset">
+            <ul>
+              <li>
+                <a href="{% url 'sales_report_pdf' %}"  data-bs-toggle="tooltip" data-bs-placement="top" title="pdf" >
+                  <img src="{% static 'img/icons/pdf.svg' %}" alt="img" />
+                </a>
+              </li>
+              <li>
+                <a   href="{% url 'sales_report_excel' %}" data-bs-toggle="tooltip"  data-bs-placement="top"  title="excel" >
+                  <img src="{% static 'img/icons/excel.svg' %}" alt="img" />
+                </a>
+              </li>
+              {% comment %}
+              <li>
+                <a
+                  href="{% url 'sales_report_print' %}"  data-bs-toggle="tooltip" data-bs-placement="top"  title="print">
+                  <img src="{% static 'img/icons/printer.svg' %}" alt="img" />
+                </a>
+              </li>
+              {% endcomment %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Filtering date in the page -->
+        <div class="card" id="filter_inputs">
+          <div class="card-body pb-0">
+            <form method="get" action="{% url 'sales_report' %}">
+              <div class="row">
+                <div class="col-lg-2 col-sm-6 col-12">
+                  <div class="form-group">
+                    <div class="input-groupicon">
+                      <input
+                        type="text" name="from_date" value="{{ from_date }}" placeholder="From Date" class="datetimepicker" />
+                      <div class="addonset">
+                        <img
+                          src="{% static 'img/icons/calendars.svg' %}" alt="img" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                  <div class="form-group">
+                    <div class="input-groupicon">
+                      <input type="text"  name="to_date" value="{{ to_date }}" placeholder="To Date"  class="datetimepicker" />
+                      <div class="addonset">
+                        <img
+                          src="{% static 'img/icons/calendars.svg' %}" alt="img"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-1 col-sm-6 col-12">
+                  <div class="form-group">
+                    <button class="btn btn-filters ms-auto" type="submit">
+                      <img
+                        src="{% static 'img/icons/search-whites.svg' %}" alt="img"/>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-lg-2 col-sm-6 col-12 d-flex ms-auto">
+                  <div class="form-group w-100">
+                    <div
+                      class="input-groupicon d-flex align-items-center justify-content-between">
+                      <a class="btn btn-danger" href="{% url 'sales_report' %}">
+                        <img src="{% static 'img/icons/close-circle.svg' %}" alt=" icon" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table datanew">
+            <thead>
+              <tr>
+                <th>
+                  <label class="checkboxs">
+                    <input type="checkbox" id="select-all" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </th>
+                <th>Product Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Sold amount</th>
+                <th>Sold qty</th>
+                <th>Customer</th>
+                <th>Username</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in sale_items_tot %}
+              <tr>
+                <td>
+                  <label class="checkboxs">
+                    <input type="checkbox" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </td>
+                <td class="productimgname">
+                  <div class="product-img">
+                    <img
+                      src="{{ item.image_url }}"
+                      alt="{{ item.name }}"
+                      class="img-fluid"
+                      style="width: 50px; height: 50px; object-fit: cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <a href="javascript:void(0);">{{ item.name }}</a>
+                </td>
+                <td>PT{{ forloop.counter }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.sale_date }}</td>
+                <td>{{ item.sold_total }} Rwf</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.customer_name }}</td>
+                <td>{{ item.username }}</td> 
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

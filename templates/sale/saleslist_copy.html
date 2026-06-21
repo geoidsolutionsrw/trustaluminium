@@ -1,0 +1,419 @@
+{% extends 'home/base.html' %} {% load static %} {% block title %} saleslist
+{%endblock %} {% block content %}
+
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Sales List</h4>
+        <h6>Manage your sales</h6>
+      </div>
+      <div class="page-btn">
+        <a href="/addsales" class="btn btn-added"
+          ><img
+            src="{% static 'img/icons/plus.svg' %}"
+            alt="img"
+            class="me-1"
+          />Add Sales</a
+        >
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="table-top">
+          <div class="search-set">
+            <div class="search-path">
+              <a class="btn btn-filter" id="filter_search">
+                <img src="{% static 'img/icons/filter.svg' %}" alt="img" />
+                <span
+                  ><img src="{% static 'img/icons/closes.svg' %}" alt="img"
+                /></span>
+              </a>
+            </div>
+            <div class="search-input">
+              <a class="btn btn-searchset"
+                ><img src="{% static 'img/icons/search-white.svg' %}" alt="img"
+              /></a>
+            </div>
+          </div>
+          <div class="wordset">
+            <ul>
+              <li>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"
+                  ><img src="{% static 'img/icons/pdf.svg' %}" alt="img"
+                /></a>
+              </li>
+              <li>
+                <a
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="excel"
+                  ><img src="{% static 'img/icons/excel.svg' %}" alt="img"
+                /></a>
+              </li>
+              <li>
+                <a
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="print"
+                  ><img src="{% static 'img/icons/printer.svg' %}" alt="img"
+                /></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" id="filter_inputs">
+          <div class="card-body pb-0">
+            <div class="row">
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <input type="text" placeholder="Enter Name" />
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <input type="text" placeholder="Enter Reference No" />
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <select class="select">
+                    <option>Completed</option>
+                    <option>Paid</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <a class="btn btn-filters ms-auto"
+                    ><img
+                      src="{% static 'img/icons/search-whites.svg' %}"
+                      alt="img"
+                  /></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table datanew">
+            <thead>
+              <tr>
+                <th>
+                  <label class="checkboxs">
+                    <input type="checkbox" id="select-all" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </th>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>Reference</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Total</th>
+                <th>TIN</th>
+                <th>Due</th>
+                <th>Biller</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sale in sales_data %}
+              <tr>
+                <td>
+                  <label class="checkboxs">
+                    <input type="checkbox" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </td>
+                <td>{{ sale.date|date:"d M Y" }}</td>
+                <td>{{ sale.customer_name }}</td>
+                <td>{{ sale.sale_id }}</td>
+                <td><span class="badges bg-lightgreen">Completed</span></td>
+                <td>
+                  {% if sale.payment_status == "FULL" %}
+                  <span class="badges bg-lightgreen"
+                    >{{ sale.payment_status }}</span
+                  >
+                  {% elif sale.payment_status == "PENDING" %}
+                  <span class="badges bg-lightred"
+                    >{{ sale.payment_status }}</span
+                  >
+                  {% elif sale.payment_status == "PARTIAL" %}
+                  <span class="badges bg-lightyellow"
+                    >{{ sale.payment_status }}</span
+                  >
+                  {% endif %}
+                </td>
+                <td>{{ sale.total_amount }}</td>
+                <td>{{ sale.tin }}</td>
+                <td class="text-red">100.00</td>
+                <td>{{ sale.username }}</td>
+                <td class="text-center">
+                  <a
+                    class="action-set" href="javascript:void(0);" data-bs-toggle="dropdown"  aria-expanded="true">
+                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i></a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{% url 'sale_detail' sale.sale_id %}" class="dropdown-item" ><img
+                          src="{% static 'img/icons/eye1.svg' %}"  class="me-2" alt="img" />Sale Detail</a >
+                    </li>
+                    <li>
+                      <a href="{% url 'edit_sales' sale.sale_id %}" class="dropdown-item" ><img  src="{% static 'img/icons/edit.svg' %}" class="me-2"  alt="img"/>Edit Sale</a
+                      >
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" class="dropdown-item"
+                        data-bs-toggle="modal" data-bs-target="#showpayment"><img
+                        src="{% static 'img/icons/dollar-square.svg' %}" class="me-2"  alt="img"- />Show Payments</a >
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal"
+                        data-bs-target="#createpayment" ><img
+                          src="{% static 'img/icons/plus-circle.svg' %}" class="me-2"alt="img" />Create Payment</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" class="dropdown-item"><img
+                          src="{% static 'img/icons/download.svg' %}" class="me-2" alt="img" />Download pdf</a>
+                    </li>
+                    <li>
+                      <a
+                        href="javascript:void(0);" class="dropdown-item" onclick="showDeleteConfirmation('{{ sale.sale_id }}')" ><img
+                          src="{% static 'img/icons/delete1.svg' %}" class="me-2"alt="img"/>Delete Sale</a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Approval -->
+<div
+  class="modal fade" id="showpayment" tabindex="-1" aria-labelledby="showpayment" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Show Payments</h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Reference</th>
+                <th>Amount</th>
+                <th>Paid By</th>
+                <th>Paid By</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bor-b1">
+                <td>2022-03-07</td>
+                <td>INV/SL0101</td>
+                <td>$ 0.00</td>
+                <td>Cash</td>
+                <td>
+                  <a class="me-2" href="javascript:void(0);">
+                    <img src="{% static 'img/icons/printer.svg' %}" alt="img" />
+                  </a>
+                  <a
+                    class="me-2"
+                    href="javascript:void(0);"
+                    data-bs-target="#editpayment"
+                    data-bs-toggle="modal"
+                    data-bs-dismiss="modal"
+                  >
+                    <img src="{% static 'img/icons/edit.svg' %}" alt="img" />
+                  </a>
+                  <a class="me-2 confirm-text" href="javascript:void(0);">
+                    <img src="{% static 'img/icons/delete.svg' %}" alt="img" />
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Approval -->
+
+<div class="modal fade" id="createpayment" tabindex="-1" aria-labelledby="createpayment" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+  {{ sale.sale_id }}
+    <form id="saleForm" method="post" action="/payment_approval/{{ sale_id }}/">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Update Payment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6 col-sm-12 col-12">
+              <div class="form-group">
+                <label>Customer name</label>
+                <input type="text" name="customer_id" 
+                value="{{ sale.customer_id }}" readonly />
+                            {{ customer.customer_name }}
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12 col-12">
+              <div class="form-group">
+                <label>Purchase date</label>
+                <div class="input-groupicon">
+                  <input type="text" name="date" value="{{ sale.date|date:'Y-m-d' }}" class="datetimepicker" readonly />
+                  <div class="addonset">
+                    <img src="{% static 'img/icons/calendars.svg' %}" alt="img" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12 col-12">
+              <div class="form-group">
+                <label>Reference</label>
+                <input type="text" name="sale_id" value="{{ sale.saleid }}" readonly />
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12 col-12">
+              <div class="form-group">
+                <label>Total Amount</label>
+                <input type="number" name="total_amount" value="{{ sale.total_amount }}" step="0.01" required />
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12 col-12">
+              <div class="form-group">
+                <label>Payment Status</label>
+                <select class="select" name="payment_status" required>
+{% comment %}                   
+                  <option value="Online" {% if sale.payment_status == 'Online' %}selected{% endif %}>Online</option>
+                  <option value="Inprogress" {% if sale.payment_status == 'Inprogress' %}selected{% endif %}>Inprogress</option> {% endcomment %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-submit">Update</button>
+          <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div
+  class="modal fade"
+  id="deleteConfirmModal"
+  tabindex="-1"
+  aria-labelledby="deleteModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+          <h5>Are you sure?</h5>
+          <p class="text-muted">You won't be able to revert this!</p>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <form id="deleteForm" method="POST">
+          {% csrf_token %}
+          <input type="hidden" id="deleteId" name="sale_id" value="" />
+          <button type="submit" class="btn btn-danger">Yes, delete it!</button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add this script section at the end of your template -->
+<script>
+  // Function to show delete confirmation modal
+  function showDeleteConfirmation(saleId) {
+    document.getElementById("deleteId").value = saleId;
+    document.getElementById("deleteForm").action = `/delete_sale/${saleId}/`;
+    const deleteModal = new bootstrap.Modal(
+      document.getElementById("deleteConfirmModal")
+    );
+    deleteModal.show();
+  }
+
+  // Add form submit handler for delete
+  document
+    .getElementById("deleteForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const saleId = document.getElementById("deleteId").value;
+      const form = this;
+
+      fetch(form.action, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value,
+        },
+        body: new FormData(form),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Close modal
+            bootstrap.Modal.getInstance(
+              document.getElementById("deleteConfirmModal")
+            ).hide();
+            // Just reload the page without any alert
+            location.reload();
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Optional: Handle error silently or show in console
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,1448 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Trust Aluminium — Premium Hardware & Building Solutions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    :root {
+      --navy:   #1E2D40;
+      --orange: #F07B22;
+      --light:  #F8FAFC;
+      --border: #E5E7EB;
+      --text:   #1a202c;
+      --muted:  #6B7280;
+      --white:  #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 { font-family: 'Nunito Sans', sans-serif; }
+
+    /* ── NAVBAR ────────────────────────────────── */
+    .navbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .navbar-brand {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--navy) !important;
+      letter-spacing: 0.04em;
+    }
+    .navbar-brand span { color: var(--orange); }
+    .nav-link {
+      color: var(--muted) !important;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.4rem 1rem !important;
+      transition: color .2s;
+    }
+    .nav-link:hover { color: var(--navy) !important; }
+    .btn-nav-quote {
+      background: var(--orange);
+      color: var(--white) !important;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.45rem 1.2rem !important;
+      border-radius: 6px;
+      transition: background .2s;
+    }
+    .btn-nav-quote:hover { background: #d96a14; }
+
+    /* ── HERO ──────────────────────────────────── */
+    .hero {
+      padding: 5rem 0 3rem;
+      background: var(--white);
+      position: relative;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--orange);
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--orange);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--orange);
+    }
+    .hero h1 {
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.08;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--orange);
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 520px;
+      margin-bottom: 2rem;
+    }
+    .btn-hero-primary {
+      background: var(--navy);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.8rem;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background .2s;
+      margin-right: 0.75rem;
+    }
+    .btn-hero-primary:hover { background: #111d2b; color: var(--white); }
+    .btn-hero-secondary {
+      background: transparent;
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.8rem;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      text-decoration: none;
+      display: inline-block;
+      transition: all .2s;
+    }
+    .btn-hero-secondary:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ── HERO STATS ────────────────────────────── */
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat-value {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--orange);
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .hero-stat-divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
+
+    /* ── HERO RIGHT CARD ───────────────────────── */
+    .hero-card {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      height: 100%;
+    }
+    .hero-card-title {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 1.2rem;
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .feature-icon {
+      width: 36px; height: 36px;
+      background: var(--navy);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .feature-icon i { font-size: 1.1rem; color: var(--orange); }
+    .feature-text h5 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+    .feature-text p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ── SERVICES ──────────────────────────────── */
+    #services { background: var(--white); padding: 4.5rem 0; }
+    .section-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--orange);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 0.8rem;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.7;
+      max-width: 540px;
+    }
+    .service-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      transition: all .25s;
+    }
+    .service-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-4px);
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--orange);
+      transform: scaleX(0);
+      transition: transform .25s;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-number {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .service-icon-wrap {
+      width: 48px; height: 48px;
+      background: var(--light);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+    }
+    .service-icon-wrap i { font-size: 1.4rem; color: var(--navy); }
+    .service-card h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.6rem;
+    }
+    .service-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── PRODUCTS ──────────────────────────────── */
+    #products { background: var(--light); padding: 4.5rem 0; }
+    /* ── BRAND FILTER BAR ─────────────────────── */
+    .brand-filter-outer {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 0.6rem;
+    }
+    .brand-filter-bar {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      flex: 1;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-behavior: smooth;
+      padding: 0.1rem 0.2rem;
+    }
+    .brand-filter-bar::-webkit-scrollbar { display: none; }
+    .brand-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-width: 80px;
+      padding: 0.6rem 0.5rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .brand-btn i {
+      font-size: 1.4rem;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .brand-btn:hover {
+      border-color: var(--orange);
+      color: var(--navy);
+      background: #fff8f3;
+    }
+    .brand-btn:hover i { color: var(--orange); }
+    .brand-btn.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+    .brand-btn.active i { color: var(--orange); }
+    .scroll-btn {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--navy);
+      font-weight: 700;
+      line-height: 1;
+      transition: all .2s;
+      user-select: none;
+    }
+    .scroll-btn:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.2rem;
+    }
+    .product-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all .25s;
+    }
+    .product-card:hover {
+      border-color: var(--orange);
+      transform: translateY(-4px);
+    }
+    .product-img-wrap {
+      height: 180px;
+      background: var(--light);
+      overflow: hidden;
+      position: relative;
+    }
+    .product-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .35s;
+    }
+    .product-card:hover .product-img-wrap img { transform: scale(1.06); }
+    .product-overlay {
+      position: absolute; inset: 0;
+      background: rgba(30,45,64,0.55);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    .product-card:hover .product-overlay { opacity: 1; }
+    .btn-quote-product {
+      background: var(--orange);
+      color: var(--white);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 1rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-quote-product:hover { background: #d96a14; color: var(--white); }
+    .product-info { padding: 0.9rem 1rem 1rem; }
+    .product-category {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.25rem;
+    }
+    .product-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin: 0;
+    }
+
+    /* ── QUICK QUOTE STRIP ─────────────────────── */
+    .quote-strip {
+      background: var(--navy);
+      padding: 2.5rem 0;
+    }
+    .quote-strip-inner {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .quote-strip-title {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--white);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .quote-strip-title span { color: var(--orange); }
+    .quote-strip-divider {
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+    .quote-form-inline {
+      display: flex;
+      gap: 0.75rem;
+      flex: 1;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .quote-input {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      color: var(--white);
+      font-size: 0.88rem;
+      font-family: 'Nunito Sans', sans-serif;
+      flex: 1;
+      min-width: 150px;
+      transition: border-color .2s;
+    }
+    .quote-input::placeholder { color: rgba(255,255,255,0.35); }
+    .quote-input:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    .quote-select {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.88rem;
+      font-family: 'Nunito Sans', sans-serif;
+      flex: 1;
+      min-width: 150px;
+      cursor: pointer;
+    }
+    .quote-select option { background: var(--navy); color: var(--white); }
+    .btn-strip-submit {
+      background: var(--orange);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+    .btn-strip-submit:hover { background: #d96a14; }
+    .quote-strip-note {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.8rem;
+      text-align: center;
+    }
+
+    /* ── FULL QUOTATION SECTION ────────────────── */
+    #quotation { background: var(--light); padding: 4.5rem 0; }
+    .quote-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+    }
+    .quote-card .form-label {
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+    .quote-card .form-control,
+    .quote-card .form-select {
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.88rem;
+      color: var(--text);
+      transition: border-color .2s;
+    }
+    .quote-card .form-control:focus,
+    .quote-card .form-select:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(240,123,34,0.12);
+    }
+    .product-item-row {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .btn-add-item {
+      width: 100%;
+      padding: 0.55rem;
+      border: 1.5px dashed var(--border);
+      border-radius: 7px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all .2s;
+      margin-bottom: 1rem;
+    }
+    .btn-add-item:hover { border-color: var(--orange); color: var(--orange); }
+    .btn-remove-item {
+      position: absolute;
+      top: 8px; right: 10px;
+      background: none;
+      border: none;
+      color: #f87171;
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .btn-submit-quote {
+      background: var(--orange);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 0.8rem;
+      border-radius: 7px;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-submit-quote:hover { background: #d96a14; }
+    .quote-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .quote-info-icon {
+      width: 42px; height: 42px;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .quote-info-icon i { font-size: 1.2rem; color: var(--navy); }
+    .quote-info-item h6 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.2rem;
+    }
+    .quote-info-item p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+    .alert-success-q {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .alert-error-q {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    /* ── FOOTER ────────────────────────────────── */
+    footer {
+      background: var(--navy);
+      padding: 3rem 0 1.5rem;
+      color: rgba(255,255,255,0.55);
+    }
+    .footer-brand {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .footer-brand span { color: var(--orange); }
+    .footer-desc {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      margin-bottom: 1.2rem;
+      max-width: 280px;
+    }
+    .footer-social a {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.5);
+      margin-right: 0.5rem;
+      text-decoration: none;
+      transition: all .2s;
+      font-size: 1rem;
+    }
+    .footer-social a:hover { border-color: var(--orange); color: var(--orange); }
+    .footer-heading {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+    .footer-link {
+      display: block;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.86rem;
+      margin-bottom: 0.5rem;
+      transition: color .2s;
+    }
+    .footer-link:hover { color: var(--orange); }
+    .footer-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      margin-bottom: 0.6rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .footer-contact-item i { color: var(--orange); font-size: 1rem; }
+    .footer-divider {
+      border-color: rgba(255,255,255,0.08);
+      margin: 2rem 0 1.2rem;
+    }
+    .footer-bottom {
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .footer-bottom a {
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      font-size: 0.78rem;
+    }
+    .footer-bottom a:hover { color: var(--orange); }
+
+    /* ── LOAD MORE ─────────────────────────────── */
+    .btn-load-more {
+      background: var(--white);
+      border: 1.5px solid var(--navy);
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.7rem 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .25s;
+      font-family: 'Nunito Sans', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-load-more:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+    .btn-load-more i {
+      font-size: 1rem;
+      transition: transform .3s;
+    }
+    .btn-load-more.loading i {
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .load-more-count {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* ── ORANGE ACCENT LINE ────────────────────── */
+    .orange-line {
+      height: 4px;
+      background: var(--orange);
+      width: 100%;
+    }
+
+    /* ── HERO SLIDESHOW ────────────────────────── */
+    .hero-slideshow {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .hero-slide-img {
+      height: 420px;
+      object-fit: cover;
+      display: block;
+    }
+    .carousel-caption {
+      background: linear-gradient(to top, rgba(30,45,64,0.85) 0%, transparent 100%);
+      left: 0; right: 0; bottom: 0;
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: left;
+    }
+    .slide-badge {
+      background: var(--orange);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .carousel-caption p {
+      color: rgba(255,255,255,0.9);
+      font-size: 0.92rem;
+      margin: 0;
+      font-weight: 500;
+    }
+    .carousel-indicators button {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.5);
+      border: none;
+    }
+    .carousel-indicators button.active {
+      background-color: var(--orange);
+    }
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 36px;
+      height: 36px;
+      background: rgba(30,45,64,0.6);
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0 10px;
+      opacity: 1;
+    }
+    .carousel-control-prev { left: 8px; }
+    .carousel-control-next { right: 8px; }
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon { width: 16px; height: 16px; }
+
+    /* ── RESPONSIVE ────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero { padding: 3rem 0 2rem; }
+      .hero-stats { gap: 1.2rem; flex-wrap: wrap; }
+      .quote-strip-inner { flex-direction: column; align-items: flex-start; }
+      .quote-strip-divider { display: none; }
+      .quote-form-inline { width: 100%; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ───────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="#">TRUST <span>ALUMINIUM</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="#products">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contactus">Contact</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link btn-nav-quote" href="#quotation">Request Quote</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="hero-eyebrow">Kigali, Rwanda</div>
+        <h1>Premium aluminium<br>& hardware,<br><em>delivered.</em></h1>
+        <p class="hero-sub">
+          High-quality profiles, fittings, and accessories for residential
+          and commercial construction projects across Rwanda. Trusted by
+          {{ customer_count }}+ customers since 2019.
+        </p>
+        <a href="#products" class="btn-hero-primary">Browse Products</a>
+        <a href="#services" class="btn-hero-secondary">Our Services</a>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-value">{{ product_count }}+</div>
+            <div class="hero-stat-label">Products in stock</div>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div>
+            <div class="hero-stat-value">{{ customer_count }}+</div>
+            <div class="hero-stat-label">Happy customers</div>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div>
+            <div class="hero-stat-value">24h</div>
+            <div class="hero-stat-label">Quote turnaround</div>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div>
+            <div class="hero-stat-value">5+</div>
+            <div class="hero-stat-label">Years in business</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-slideshow">
+          <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+              <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+              <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{% static 'img/product/background1.jpg' %}" class="d-block w-100 hero-slide-img" alt="Trust Aluminium Store">
+                <div class="carousel-caption">
+                  <span class="slide-badge">Premium Quality</span>
+                  <p>Durable aluminium solutions for every project</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{% static 'img/product/background2.jpg' %}" class="d-block w-100 hero-slide-img" alt="Hardware Products">
+                <div class="carousel-caption">
+                  <span class="slide-badge">Wide Selection</span>
+                  <p>200+ products always in stock</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{% static 'img/product/background3.jpg' %}" class="d-block w-100 hero-slide-img" alt="Expert Service">
+                <div class="carousel-caption">
+                  <span class="slide-badge">Expert Service</span>
+                  <p>Trusted by 500+ customers across Rwanda</p>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ──────────────────────────────────────── -->
+<section id="services">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8">
+        <p class="section-eyebrow">What we offer</p>
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-sub">
+          Trust Aluminium Ltd provides a full range of building aluminium and hardware products,
+          along with professional quotation and fabrication services across Rwanda.
+        </p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <div class="service-number">01</div>
+          <div class="service-icon-wrap"><i class='bx bx-building-house'></i></div>
+          <h4>Building & Fabrication</h4>
+          <p>Professional fabrication and installation of aluminium windows, doors, and custom structures for homes and businesses.</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <div class="service-number">02</div>
+          <div class="service-icon-wrap"><i class='bx bx-store'></i></div>
+          <h4>Hardware Store</h4>
+          <p>A wide range of quality products including profiles, fittings, locks, handles, and accessories for every project.</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <div class="service-number">03</div>
+          <div class="service-icon-wrap"><i class='bx bx-detail'></i></div>
+          <h4>Quotation Services</h4>
+          <p>Detailed and accurate cost estimates tailored to your project needs. Request online and receive your quote within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ── PRODUCTS ───────────────────────────────────────── -->
+<section id="products">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-lg-8">
+        <p class="section-eyebrow">Our catalogue</p>
+        <h2 class="section-title">Popular Products</h2>
+        <p class="section-sub">
+          Browse our most popular aluminium and hardware products.
+          Click any product to request a quotation.
+        </p>
+      </div>
+    </div>
+
+    <!-- Brand filter bar -->
+    <div class="brand-filter-outer">
+      <div class="scroll-btn" onclick="scrollBrands(-1)" title="Previous">&#8249;</div>
+      <div class="brand-filter-bar" id="brandFilterBar">
+        <button class="brand-btn active" data-filter="all">
+          <i class='bx bx-grid-alt'></i>
+          All
+        </button>
+        {% for brand in product_brands %}
+        <button class="brand-btn" data-filter="{{ brand }}" data-brand-name="{{ brand|lower }}">
+          <i class='bx bx-purchase-tag'></i>
+          {{ brand }}
+        </button>
+        {% endfor %}
+      </div>
+      <div class="scroll-btn" onclick="scrollBrands(1)" title="Next">&#8250;</div>
+    </div>
+
+    <!-- Live product grid from database — filtered by brand -->
+    <div class="product-grid" id="productGrid">
+      {% for product in landing_products %}
+      <div class="product-card" data-brand="{{ product.brand|default:'' }}" data-index="{{ forloop.counter0 }}">
+        <div class="product-img-wrap">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.product_name }}" loading="lazy" />
+          {% else %}
+            <img src="{% static 'img/noimage.png' %}" alt="{{ product.product_name }}" loading="lazy" />
+          {% endif %}
+          <div class="product-overlay">
+            <a href="#quotation" class="btn-quote-product"
+               onclick="prefillProduct('{{ product.productid }}', '{{ product.product_name|escapejs }}')">
+              Request Quote
+            </a>
+          </div>
+        </div>
+        <div class="product-info">
+          {% if product.brand %}
+            <div class="product-category">{{ product.brand }}</div>
+          {% endif %}
+          <p class="product-name">{{ product.product_name }}</p>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:var(--muted);">
+        <i class='bx bx-package' style="font-size:3rem;opacity:.3;display:block;margin-bottom:0.5rem;"></i>
+        No products available yet.
+      </div>
+      {% endfor %}
+      <div id="no-products-msg" style="display:none;grid-column:1/-1;text-align:center;padding:3rem 0;color:#6B7280;">
+        <i class='bx bx-search-alt' style="font-size:2.5rem;opacity:.3;display:block;margin-bottom:0.5rem;"></i>
+        No products found in this brand.
+      </div>
+    </div>
+
+    <!-- Load More button — only visible in All view -->
+    <div class="text-center mt-4" id="loadMoreWrap">
+      <button class="btn-load-more" id="loadMoreBtn" onclick="loadMoreProducts()">
+        <i class='bx bx-loader-alt' id="loadMoreIcon"></i>
+        Show More Products
+      </button>
+      <p class="load-more-count mt-2" id="loadMoreCount"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FULL QUOTATION FORM ────────────────────────────── -->
+<section id="quotation">
+  <div class="container">
+    <div class="row g-5 align-items-start">
+
+      <!-- Left info -->
+      <div class="col-lg-4">
+        <p class="section-eyebrow">Get a quote</p>
+        <h2 class="section-title">Request a Quotation</h2>
+        <p class="section-sub mb-4">
+          Fill in your details and the products you need.
+          Our team will send you a detailed quotation within 24 hours.
+        </p>
+        <div class="quote-info-item">
+          <div class="quote-info-icon"><i class='bx bx-time-five'></i></div>
+          <div>
+            <h6>Fast response</h6>
+            <p>We review all quotation requests within 24 hours on business days.</p>
+          </div>
+        </div>
+        <div class="quote-info-item">
+          <div class="quote-info-icon"><i class='bx bx-check-shield'></i></div>
+          <div>
+            <h6>Accurate pricing</h6>
+            <p>Our quotes are detailed and transparent — no hidden costs.</p>
+          </div>
+        </div>
+        <div class="quote-info-item">
+          <div class="quote-info-icon"><i class='bx bx-phone'></i></div>
+          <div>
+            <h6>Direct contact</h6>
+            <p>You can also reach us at <strong>+250 785 737 917</strong> during business hours.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right form -->
+      <div class="col-lg-8">
+        <div class="quote-card">
+          <div class="alert-success-q" id="quoteSuccess">
+            <i class='bx bx-check-circle' style="margin-right:6px;"></i>
+            Your quotation request has been submitted! We'll contact you within 24 hours.
+          </div>
+          <div class="alert-error-q" id="quoteError">
+            <i class='bx bx-error-circle' style="margin-right:6px;"></i>
+            <span id="quoteErrorMsg">Something went wrong. Please try again.</span>
+          </div>
+
+          <form id="quotationForm" method="post" action="{% url 'public_quotation_request' %}">
+            {% csrf_token %}
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name *</label>
+                <input type="text" name="customer_name" class="form-control" placeholder="Your full name" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number *</label>
+                <input type="text" name="phone_number" class="form-control" placeholder="+250 7XX XXX XXX" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email_address" class="form-control" placeholder="your@email.com" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Company / Organisation</label>
+                <input type="text" name="company" class="form-control" placeholder="Optional" />
+              </div>
+            </div>
+
+            <label class="form-label d-block mb-2">Products Needed *</label>
+            <div id="productItems">
+              <div class="product-item-row" id="item-0">
+                <div class="row g-2 align-items-end">
+                  <div class="col-sm-7">
+                    <label class="form-label" style="font-size:.78rem;">Product</label>
+                    <select name="product_id[]" class="form-select form-select-sm" required>
+                      <option value="">— Select product —</option>
+                      {% for product in all_products %}
+                        <option value="{{ product.productid }}">{{ product.product_name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-sm-3">
+                    <label class="form-label" style="font-size:.78rem;">Quantity</label>
+                    <input type="number" name="quantity[]" class="form-control form-control-sm"
+                           placeholder="Qty" min="1" value="1" required />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-add-item mt-1 mb-3" onclick="addProductItem()">
+              <i class='bx bx-plus' style="margin-right:4px;"></i>Add another product
+            </button>
+
+            <div class="mb-3">
+              <label class="form-label">Additional Notes</label>
+              <textarea name="notes" class="form-control" rows="3"
+                        placeholder="Project details, delivery location, specific requirements…"></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit-quote">
+              <i class='bx bx-send' style="margin-right:6px;"></i>Submit Quotation Request
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<div class="orange-line"></div>
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="footer-brand">TRUST <span>ALUMINIUM</span></div>
+        <p class="footer-desc">
+          Premium aluminium and hardware solutions for residential and
+          commercial projects across Rwanda.
+        </p>
+        <div class="footer-social">
+          <a href="#"><i class='bx bxl-twitter'></i></a>
+          <a href="#"><i class='bx bxl-instagram'></i></a>
+          <a href="#"><i class='bx bxl-facebook-circle'></i></a>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="footer-heading">Quick Links</div>
+        <a href="#services" class="footer-link">Services</a>
+        <a href="#products" class="footer-link">Products</a>
+        <a href="#quotation" class="footer-link">Request Quote</a>
+        <a href="/contactus" class="footer-link">Contact Us</a>
+      </div>
+      <div class="col-md-3">
+        <div class="footer-heading">Services</div>
+        <a href="#" class="footer-link">Building & Fabrication</a>
+        <a href="#" class="footer-link">Hardware Store</a>
+        <a href="#" class="footer-link">Quotation Services</a>
+      </div>
+      <div class="col-md-3">
+        <div class="footer-heading">Contact</div>
+        <div class="footer-contact-item"><i class='bx bx-map'></i> Kigali — Remera, KK 13 Ave</div>
+        <div class="footer-contact-item"><i class='bx bx-phone'></i> +250 785 737 917</div>
+        <div class="footer-contact-item"><i class='bx bx-envelope'></i> info@trustaluminium.rw</div>
+        <div class="footer-contact-item"><i class='bx bx-id-card'></i> TIN: 108592160</div>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <div class="footer-bottom">
+      <span>© 2025 Trust Aluminium Ltd. All rights reserved.</span>
+      <a href="/login">Staff Login</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  /* ── Config ────────────────────────────────────────────── */
+  const PAGE_SIZE    = 30;
+  let   currentShown = PAGE_SIZE;
+  let   activeFilter = 'all';
+
+  /* ── Brand icon mapping ───────────────────────────────── */
+  const brandIcons = {
+    'euro profile': 'bx-shape-circle',
+    'euro':         'bx-shape-circle',
+    'dubai':        'bx-buildings',
+    'glass':        'bx-shape-square',
+    'rubber':       'bx-radio-circle',
+    'fiber':        'bx-cable-car',
+    'stainless':    'bx-medal',
+    'shower':       'bx-droplet',
+    'sliding':      'bx-slider',
+    'aluminium':    'bx-cube',
+    'door':         'bx-door-open',
+    'window':       'bx-window-alt',
+    'panahead':     'bx-wrench',
+    'siesca':       'bx-wrench',
+    'wall':         'bx-border-all',
+    'black':        'bx-circle',
+    'credit':       'bx-credit-card',
+    'bit':          'bx-chip',
+    'rnk':          'bx-cog',
+    'plastique':    'bx-shape-polygon',
+    'white':        'bx-circle',
+    'grey':         'bx-circle',
+    'foleze':       'bx-link',
+    'cheville':     'bx-anchor',
+    'flausted':     'bx-plug',
+    'sylver color': 'bx-color',
+    'cutter':       'bx-cut',
+    'shine':        'bx-star',
+    'rivet':        'bx-git-commit',
+    'metal':        'bx-layer',
+    'mdf':          'bx-table',
+    'steel':        'bx-cylinder',
+    'meter':        'bx-ruler',
+    'net':          'bx-globe-alt',
+    'srews':        'bx-rotate-right',
+    'screws':       'bx-rotate-right',
+    'bolt':         'bxs-bolt',
+    'gun':          'bx-target-lock',
+    'pince':        'bx-math',
+    'tourne vis':   'bx-refresh',
+    'hiliti':       'bx-hammer',
+    'woolpile':     'bx-hive',
+    'inox':         'bx-shield',
+    'inox(aluminium)': 'bx-shield',
+    'soap':         'bx-droplet-half',
+    'clear':        'bx-glasses',
+    'magnet':       'bx-magnet',
+    'ruvers':       'bx-rotate-left',
+    'buro':         'bx-briefcase',
+    'gun':          'bx-target-lock',
+    'pince':        'bx-math',
+    '1"':           'bx-font-size',
+    'default':      'bx-purchase-tag',
+  };
+
+  /* Apply icons to all brand buttons */
+  document.querySelectorAll('.brand-btn[data-brand-name]').forEach(btn => {
+    const key  = btn.dataset.brandName.trim().toLowerCase();
+    const icon = brandIcons[key] || brandIcons['default'];
+    const i    = btn.querySelector('i');
+    if (i) {
+      i.className = '';
+      i.classList.add('bx', icon);
+    }
+  });
+
+  /* ── Apply filter + pagination ─────────────────────────── */
+  function applyFilter(filter) {
+    activeFilter   = filter;
+    currentShown   = PAGE_SIZE;
+    const cards    = Array.from(document.querySelectorAll('.product-card'));
+    const isAll    = filter === 'all';
+    let   matched  = 0;
+
+    cards.forEach(card => {
+      const brand = (card.dataset.brand || '').trim().toLowerCase();
+      const match = isAll
+        || brand === filter
+        || brand.includes(filter)
+        || filter.includes(brand);
+
+      if (!match) {
+        card.style.display = 'none';
+        return;
+      }
+
+      // In "All" view, only show first PAGE_SIZE
+      if (isAll && matched >= PAGE_SIZE) {
+        card.style.display = 'none';
+      } else {
+        card.style.display = '';
+      }
+      matched++;
+    });
+
+    // No results message
+    const msg = document.getElementById('no-products-msg');
+    if (msg) msg.style.display = matched === 0 ? 'block' : 'none';
+
+    // Load More button — only in All view when there are more
+    const wrap  = document.getElementById('loadMoreWrap');
+    const count = document.getElementById('loadMoreCount');
+    if (wrap) {
+      const showBtn = isAll && matched > PAGE_SIZE;
+      wrap.style.display = showBtn ? 'block' : 'none';
+      if (count && showBtn) {
+        count.textContent = `Showing ${Math.min(PAGE_SIZE, matched)} of ${matched} products`;
+      }
+    }
+  }
+
+  /* ── Load More ──────────────────────────────────────────── */
+  function loadMoreProducts() {
+    const btn   = document.getElementById('loadMoreBtn');
+    const count = document.getElementById('loadMoreCount');
+    btn.classList.add('loading');
+
+    setTimeout(() => {
+      const cards   = Array.from(document.querySelectorAll('.product-card'));
+      const isAll   = activeFilter === 'all';
+      let   matched = 0;
+      let   shown   = 0;
+
+      cards.forEach(card => {
+        const brand = (card.dataset.brand || '').trim().toLowerCase();
+        const match = isAll
+          || brand === activeFilter
+          || brand.includes(activeFilter)
+          || activeFilter.includes(brand);
+        if (!match) return;
+        matched++;
+        if (matched <= currentShown + PAGE_SIZE) {
+          card.style.display = '';
+          shown++;
+        }
+      });
+
+      currentShown += PAGE_SIZE;
+      btn.classList.remove('loading');
+
+      // Hide button if all shown
+      if (currentShown >= matched) {
+        document.getElementById('loadMoreWrap').style.display = 'none';
+      } else if (count) {
+        count.textContent = `Showing ${currentShown} of ${matched} products`;
+      }
+    }, 400);
+  }
+
+  /* ── Brand filter click ─────────────────────────────────── */
+  document.querySelectorAll('.brand-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      applyFilter(this.dataset.filter.trim().toLowerCase());
+    });
+  });
+
+  /* ── Init: run on page load ─────────────────────────────── */
+  applyFilter('all');
+
+  /* ── Scroll brand filter bar ────────────────────────────── */
+  function scrollBrands(dir) {
+    const bar = document.getElementById('brandFilterBar');
+    bar.scrollBy({ left: dir * 240, behavior: 'smooth' });
+  }
+
+  /* Add product item row */
+  let itemCount = 1;
+  function addProductItem() {
+    const container = document.getElementById('productItems');
+    const newItem   = document.getElementById('item-0').cloneNode(true);
+    newItem.id      = 'item-' + itemCount++;
+    newItem.querySelector('select').value = '';
+    newItem.querySelector('input[type=number]').value = 1;
+    const removeBtn       = document.createElement('button');
+    removeBtn.type        = 'button';
+    removeBtn.className   = 'btn-remove-item';
+    removeBtn.innerHTML   = '&times;';
+    removeBtn.onclick     = function() { newItem.remove(); };
+    newItem.appendChild(removeBtn);
+    container.appendChild(newItem);
+  }
+
+  /* Prefill product from catalogue click */
+  function prefillProduct(productId, productName) {
+    const firstSelect = document.querySelector('select[name="product_id[]"]');
+    if (firstSelect) firstSelect.value = productId;
+    document.getElementById('quotation').scrollIntoView({ behavior: 'smooth' });
+  }
+
+
+
+  /* Full quotation form AJAX */
+  document.getElementById('quotationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.btn-submit-quote');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    fetch(this.action, {
+      method: 'POST',
+      body: new FormData(this),
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('quoteSuccess').style.display = 'block';
+        document.getElementById('quoteError').style.display   = 'none';
+        this.reset();
+      } else {
+        document.getElementById('quoteErrorMsg').textContent  = data.error || 'Something went wrong.';
+        document.getElementById('quoteError').style.display   = 'block';
+        document.getElementById('quoteSuccess').style.display = 'none';
+      }
+    })
+    .catch(() => {
+      document.getElementById('quoteError').style.display = 'block';
+    })
+    .finally(() => {
+      btn.disabled    = false;
+      btn.textContent = 'Submit Quotation Request';
+    });
+  });
+</script>
+</body>
+</html>

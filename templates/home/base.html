@@ -1,0 +1,875 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Bootstrap Admin Template">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, html5, responsive">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{% block title %}My Site{% endblock %}</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="path/to/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}" >
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/model.css' %}">
+    <link href="{% static 'css/sales/select2-custom.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'plugins/owlcarousel/owl.carousel.min.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+      /* ── ACTIVE SIDEBAR ITEM ────────────────────────── */
+      #sidebar-menu ul li.active-page > a,
+      #sidebar-menu ul li.active-page > a span {
+        color: #F07B22 !important;
+      }
+      #sidebar-menu ul li.active-page > a img {
+        filter: invert(50%) sepia(90%) saturate(500%) hue-rotate(350deg) brightness(1.1);
+      }
+      #sidebar-menu ul li ul li.active-page > a {
+        color: #F07B22 !important;
+        font-weight: 600;
+      }
+      #sidebar-menu ul li.submenu.active-parent > a span:first-child {
+        color: #F07B22 !important;
+      }
+    </style>
+
+    {% if user.is_authenticated %}
+    <style>
+      /* ── NOTIFICATION BELL ─────────────────────────────── */
+      .notif-bell-wrap {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        margin-right: 8px;
+        padding: 6px;
+        border-radius: 8px;
+        transition: background .2s;
+      }
+      .notif-bell-wrap:hover { background: rgba(0,0,0,0.05); }
+      .notif-bell-wrap i { font-size: 1.3rem; color: #6b7280; transition: color .2s; }
+      .notif-bell-wrap:hover i { color: #1E2D40; }
+      .notif-badge {
+        position: absolute;
+        top: 2px; right: 2px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 8px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 0 3px;
+        line-height: 1;
+      }
+
+      /* ── MODAL OVERLAY ─────────────────────────────────── */
+      .notif-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(3px);
+      }
+      .notif-overlay.show { display: flex; }
+
+      /* ── MODAL BOX ─────────────────────────────────────── */
+      .notif-modal {
+        background: #fff;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 480px;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+        overflow: hidden;
+        animation: notifSlideUp .25s ease;
+      }
+      @keyframes notifSlideUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+      }
+
+      /* ── MODAL HEADER ──────────────────────────────────── */
+      .notif-modal-header {
+        background: #1E2D40;
+        padding: 1rem 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .notif-modal-header h5 {
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .notif-modal-header h5 i { color: #F07B22; font-size: 1.1rem; }
+      .notif-new-count {
+        background: #F07B22;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 9px;
+        border-radius: 20px;
+      }
+      .notif-close-btn {
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: rgba(255,255,255,0.8);
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.1rem;
+        display: flex; align-items: center; justify-content: center;
+        transition: background .2s;
+        line-height: 1;
+      }
+      .notif-close-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+      /* ── MODAL BODY ────────────────────────────────────── */
+      .notif-modal-body { max-height: 360px; overflow-y: auto; }
+      .notif-item {
+        padding: 0.9rem 1.4rem;
+        border-bottom: 1px solid #f3f4f6;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        transition: background .15s;
+      }
+      .notif-item:last-child { border-bottom: none; }
+      .notif-item:hover { background: #fafafa; }
+      .notif-icon {
+        width: 38px; height: 38px;
+        background: #fff8f3;
+        border: 1px solid #fde3c8;
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+      }
+      .notif-icon i { font-size: 1.1rem; color: #F07B22; }
+      .notif-body { flex: 1; min-width: 0; }
+      .notif-body strong {
+        display: block;
+        font-size: 0.88rem;
+        color: #1E2D40;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .notif-body p {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin: 0 0 6px;
+        line-height: 1.5;
+      }
+      .notif-time {
+        font-size: 0.72rem;
+        color: #9ca3af;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .notif-item-actions { display: flex; gap: 6px; }
+      .btn-view-quot {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #1E2D40;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 5px;
+        padding: 3px 10px;
+        text-decoration: none;
+        transition: all .2s;
+      }
+      .btn-view-quot:hover { background: #1E2D40; color: #fff; border-color: #1E2D40; }
+      .btn-dismiss-notif {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #9ca3af;
+        background: transparent;
+        border: 1px solid #e2e8f0;
+        border-radius: 5px;
+        padding: 3px 10px;
+        cursor: pointer;
+        transition: all .2s;
+      }
+      .btn-dismiss-notif:hover { color: #ef4444; border-color: #fca5a5; }
+
+      /* ── MODAL FOOTER ──────────────────────────────────── */
+      .notif-modal-footer {
+        padding: 0.8rem 1.4rem;
+        background: #f9fafb;
+        border-top: 1px solid #f3f4f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .btn-dismiss-all {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6b7280;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: color .2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .btn-dismiss-all:hover { color: #ef4444; }
+      .btn-goto-quotations {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #fff;
+        background: #F07B22;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 14px;
+        text-decoration: none;
+        transition: background .2s;
+      }
+      .btn-goto-quotations:hover { background: #d96a14; color: #fff; }
+
+      /* ── BELL RING ANIMATION ───────────────────────────── */
+      @keyframes bellPulse {
+        0%   { transform: rotate(0); }
+        10%  { transform: rotate(15deg); }
+        20%  { transform: rotate(-12deg); }
+        30%  { transform: rotate(10deg); }
+        40%  { transform: rotate(-8deg); }
+        50%  { transform: rotate(5deg); }
+        60%  { transform: rotate(-3deg); }
+        100% { transform: rotate(0); }
+      }
+      .bell-ring { animation: bellPulse .6s ease; }
+    </style>
+    {% endif %}
+</head>
+
+<body>
+    <div id="global-loader">
+        <div class="whirly-loader"></div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="header">
+            <div class="header-left active">
+                <a href="/home" class="logo"></a>
+                <a href="/home" class="logo-small">
+                    <img src="{% static 'img/logo-small.png' %}" alt="">
+                </a>
+                <a id="toggle_btn" href="javascript:void(0);"></a>
+            </div>
+
+            <a id="mobile_btn" class="mobile_btn" href="javascript:void(0);">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </a>
+
+            <ul class="nav user-menu">
+                <li class="nav-item">
+                    <div class="top-nav-search">
+                        <a href="javascript:void(0);" class="responsive-search">
+                            <i class="fa fa-search"></i>
+                        </a>
+                        <form action="#">
+                            <div class="searchinputs">
+                                <input type="text" placeholder="Search Here ...">
+                                <div class="search-addon">
+                                    <span><img src="{% static 'img/icons/closes.svg' %}" alt="img"></span>
+                                </div>
+                            </div>
+                            <a class="btn" id="searchdiv"><img src="{% static 'img/icons/search.svg' %}" alt="img"></a>
+                        </form>
+                    </div>
+                </li>
+
+                <!-- ── NOTIFICATION BELL ── -->
+                {% if user.is_authenticated %}
+                <li class="nav-item d-flex align-items-center">
+                    <!-- Stock alert bell -->
+                    <div class="stock-bell-wrap"
+                         onclick="fetchLowStock(false); new bootstrap.Modal(document.getElementById('lowStockModal')).show();"
+                         title="Low Stock Alerts" id="stockBellWrap">
+                        <i class='bx bx-package'></i>
+                        <span class="stock-bell-badge" id="stockBellBadge">0</span>
+                    </div>
+                    <!-- Notification bell -->
+                    <div class="notif-bell-wrap" onclick="openNotifModal()" title="Notifications" id="notifBellWrap">
+                        <i class='bx bx-bell' id="notifBellIcon"></i>
+                        <span class="notif-badge" id="notifBadge">0</span>
+                    </div>
+                </li>
+                {% endif %}
+
+                <li class="nav-item dropdown has-arrow main-drop">
+                    <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
+                        <span class="user-img">
+                            <img src="{% static 'img/profiles/avator1.jpg' %}" alt="">
+                            <span class="status online"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu menu-drop-user">
+                        <div class="profilename">
+                            <div class="profileset">
+                                <span class="user-img">
+                                    <img src="{% static 'img/profiles/avator1.jpg' %}" alt="">
+                                    <span class="status online"></span>
+                                </span>
+                                <div class="profilesets">
+                                    {% if user.is_authenticated %}
+                                        <h6>{{ user.first_name }}</h6>
+                                        <h5>{{ user.username }}</h5>
+                                    </div>
+                                </div>
+                                <hr class="m-0">
+                                <a class="dropdown-item" href=""><i class="me-2" data-feather="user"></i> My Profile</a>
+                                <a class="dropdown-item" href=""><i class="me-2" data-feather="settings"></i> Settings</a>
+                                <hr class="m-0">
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item logout pb-0">
+                                        <img src="{% static 'img/icons/log-out.svg' %}" class="me-2" alt="img">Logout
+                                    </button>
+                                </form>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a href="{% url 'login' %}">Login</a>
+                                </li>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="dropdown mobile-user-menu">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item logout pb-0">
+                            <img src="{% static 'img/icons/log-out.svg' %}" class="me-2" alt="img">Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="active">
+                            <a href="/home"><img src="{% static 'img/icons/dashboard.svg' %}" alt="img"><span> Dashboard</span></a>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="{% static 'img/icons/product.svg' %}" alt="img"><span> Product</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/productlist">Product List</a></li>
+                                <li><a href="/addproduct">Add Product</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="{% static 'img/icons/sales1.svg' %}" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/saleslist">Sales List</a></li>
+                                <li><a href="/addsales">New Sales</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="{% static 'img/icons/quotation1.svg' %}" alt="img"><span> Quotation</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/quotation_list">Quotation List</a></li>
+                                <li><a href="/add_quotation">Add Quotation</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="{% static 'img/icons/users1.svg' %}" alt="img"><span> People</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/customer">Customer List</a></li>
+                                <li><a href="/addcustomer">Add Customer</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="{% static 'img/icons/users1.svg' %}" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/adduser">New User</a></li>
+                                <li><a href="/users">Users List</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="{% static 'img/icons/time.svg' %}" alt="img"><span> Report</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/top_customers">Customer Report</a></li>
+                                <li><a href="/sales_report">Sales Report</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="{% static 'img/icons/settings.svg' %}" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/groups/create/">Create Group</a></li>
+                                <li><a href="/groups/assign/">Assign Group</a></li>
+                                <li><a href="/permissions">Permission List</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        <script src="{% static 'js/feather.min.js' %}"></script>
+        <script src="{% static 'js/jquery.slimscroll.min.js' %}"></script>
+        <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'plugins/apexchart/apexcharts.min.js' %}"></script>
+        <script src="{% static 'plugins/apexchart/chart-data.js' %}"></script>
+        <script src="{% static 'plugins/select2/js/select2.min.js' %}"></script>
+        <script src="{% static 'plugins/sweetalert/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'plugins/sweetalert/sweetalerts.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'js/moment.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
+        <script src="{% static 'plugins/owlcarousel/owl.carousel.min.js' %}"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#mobile_btn').on('click', function() {
+                    $('#sidebar').toggleClass('active');
+                });
+                $('#sidebar-menu').slimScroll({ height: 'auto' });
+
+                // ── Highlight active sidebar link ──
+                const currentPath = window.location.pathname;
+                $('#sidebar-menu a').each(function() {
+                    const href = $(this).attr('href');
+                    if (href && href !== 'javascript:void(0);' && currentPath.startsWith(href)) {
+                        $(this).closest('li').addClass('active-page');
+                        $(this).closest('ul').closest('li.submenu').addClass('active-page active-parent');
+                        // Auto-expand the submenu
+                        $(this).closest('ul').show();
+                        $(this).closest('li.submenu').find('.menu-arrow').addClass('rotate');
+                    }
+                });
+            });
+        </script>
+
+        {% block javascript %}{% endblock %}
+
+        <!-- ── NOTIFICATION MODAL + POLLING ────────────────────── -->
+        {% if user.is_authenticated %}
+
+        <!-- Modal -->
+        <div class="notif-overlay" id="notifOverlay" onclick="handleOverlayClick(event)">
+            <div class="notif-modal" onclick="event.stopPropagation();">
+                <div class="notif-modal-header">
+                    <h5>
+                        <i class='bx bx-bell'></i>
+                        New Quotation Requests
+                        <span class="notif-new-count" id="notifModalCount">0 new</span>
+                    </h5>
+                    <button class="notif-close-btn" onclick="closeNotifModal()">&#215;</button>
+                </div>
+                <div class="notif-modal-body" id="notifModalBody"></div>
+                <div class="notif-modal-footer">
+                    <button class="btn-dismiss-all" onclick="dismissAll()">
+                        <i class='bx bx-check-double'></i> Dismiss all
+                    </button>
+                    <a href="/quotation_list" class="btn-goto-quotations">
+                        View all quotations →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Polling Script -->
+        <script>
+          let notifData = [];
+          let modalOpen = false;
+          let firstPoll = true;
+
+          function fetchNotifications() {
+            fetch('/api/notifications/', {
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+              },
+              credentials: 'same-origin'
+            })
+            .then(r => {
+              // If redirected to login (session expired), stop polling silently
+              if (!r.ok || r.redirected) return null;
+              return r.json();
+            })
+            .then(data => {
+              if (!data) return;
+              const prev  = notifData.length;
+              notifData   = data.notifications || [];
+              const count = notifData.length;
+
+              const badge = document.getElementById('notifBadge');
+              if (badge) {
+                badge.textContent   = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+              }
+
+              if (firstPoll && count > 0) { ringBell(); openNotifModal(); }
+              if (!firstPoll && count > prev && count > 0) { ringBell(); openNotifModal(); }
+
+              firstPoll = false;
+              if (modalOpen) renderModal();
+            })
+            .catch(() => {}); // Silently fail on network errors
+          }
+
+          function ringBell() {
+            const bell = document.getElementById('notifBellIcon');
+            if (!bell) return;
+            bell.classList.remove('bell-ring');
+            void bell.offsetWidth;
+            bell.classList.add('bell-ring');
+            setTimeout(() => bell.classList.remove('bell-ring'), 700);
+          }
+
+          function renderModal() {
+            const body  = document.getElementById('notifModalBody');
+            const count = document.getElementById('notifModalCount');
+            if (!body) return;
+            if (count) count.textContent = notifData.length + ' new';
+
+            if (notifData.length === 0) {
+              body.innerHTML = `
+                <div style="text-align:center;padding:2.5rem 1rem;color:#9ca3af;">
+                  <i class='bx bx-check-circle' style="font-size:2.5rem;display:block;margin-bottom:0.5rem;color:#10b981;"></i>
+                  All caught up — no new quotation requests.
+                </div>`;
+              return;
+            }
+
+            body.innerHTML = notifData.map(n => `
+              <div class="notif-item" id="notif-item-${n.id}">
+                <div class="notif-icon"><i class='bx bx-file-blank'></i></div>
+                <div class="notif-body">
+                  <strong>${escHtml(n.customer_name)}</strong>
+                  <p>
+                    ${n.product_count} product${n.product_count !== 1 ? 's' : ''} requested
+                    ${n.phone_number ? '&nbsp;·&nbsp;' + escHtml(n.phone_number) : ''}
+                  </p>
+                  <div class="notif-item-actions">
+                    <a href="javascript:void(0);"
+                       class="btn-view-quot"
+                       onclick="event.stopPropagation(); viewAndDismiss(${n.id}, '/quotation/${n.quotation_id}/');">
+                      <i class='bx bx-show' style="vertical-align:-2px;margin-right:2px;"></i>View
+                    </a>
+                    <button class="btn-dismiss-notif"
+                            onclick="event.stopPropagation(); dismissOne(${n.id})">Dismiss</button>
+                  </div>
+                </div>
+                <div class="notif-time">${escHtml(n.created_at)}</div>
+              </div>
+            `).join('');
+          }
+
+          function openNotifModal() {
+            renderModal();
+            document.getElementById('notifOverlay').classList.add('show');
+            modalOpen = true;
+          }
+
+          function closeNotifModal() {
+            document.getElementById('notifOverlay').classList.remove('show');
+            modalOpen = false;
+          }
+
+          function handleOverlayClick(e) {
+            if (e.target === document.getElementById('notifOverlay')) closeNotifModal();
+          }
+
+          function dismissOne(id) {
+            fetch(`/api/notifications/${id}/read/`, {
+              method: 'POST',
+              headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(r => r.json())
+            .then(() => {
+              notifData = notifData.filter(n => n.id !== id);
+              const badge = document.getElementById('notifBadge');
+              if (badge) {
+                badge.textContent   = notifData.length;
+                badge.style.display = notifData.length > 0 ? 'flex' : 'none';
+              }
+              renderModal();
+            });
+          }
+
+          /* Dismiss then navigate — so notification won't reappear */
+          function viewAndDismiss(id, url) {
+            fetch(`/api/notifications/${id}/read/`, {
+              method: 'POST',
+              headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(() => {
+              closeNotifModal();
+              window.location.href = url;
+            })
+            .catch(() => {
+              // Navigate anyway even if dismiss fails
+              closeNotifModal();
+              window.location.href = url;
+            });
+          }
+
+          function dismissAll() {
+            Promise.all(notifData.map(n =>
+              fetch(`/api/notifications/${n.id}/read/`, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
+              })
+            )).then(() => {
+              notifData = [];
+              const badge = document.getElementById('notifBadge');
+              if (badge) badge.style.display = 'none';
+              renderModal();
+              setTimeout(closeNotifModal, 800);
+            });
+          }
+
+          function getCookie(name) {
+            for (let c of document.cookie.split(';')) {
+              c = c.trim();
+              if (c.startsWith(name + '=')) return decodeURIComponent(c.slice(name.length + 1));
+            }
+            return null;
+          }
+
+          function escHtml(str) {
+            return String(str)
+              .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+          }
+
+          // Start polling when DOM is ready on ANY page
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+              fetchNotifications();
+              setInterval(fetchNotifications, 30000);
+            });
+          } else {
+            // DOM already loaded
+            fetchNotifications();
+            setInterval(fetchNotifications, 30000);
+          }
+        </script>
+        {% endif %}
+
+        <!-- ── LOW STOCK ALERT MODAL ─────────────────────────────── -->
+        {% if user.is_authenticated %}
+        <style>
+          .stock-modal-header { background:#1E2D40; padding:1rem 1.4rem; border:none; }
+          .stock-item { display:flex; align-items:center; gap:12px; padding:10px 1.4rem; border-bottom:1px solid #f3f4f6; transition:background .15s; }
+          .stock-item:last-child { border-bottom:none; }
+          .stock-item:hover { background:#fafafa; }
+          .stock-img { width:40px; height:40px; border-radius:8px; object-fit:cover; background:#f3f4f6; flex-shrink:0; }
+          .stock-img-placeholder { width:40px; height:40px; border-radius:8px; background:#f3f4f6; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+          .stock-info { flex:1; min-width:0; }
+          .stock-name { font-size:.88rem; font-weight:600; color:#1E2D40; margin-bottom:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+          .stock-brand { font-size:.75rem; color:#9ca3af; }
+          .stock-qty-wrap { flex-shrink:0; text-align:right; }
+          .stock-qty { font-size:1.2rem; font-weight:700; line-height:1; }
+          .stock-qty.critical { color:#ef4444; }
+          .stock-qty.warning  { color:#f59e0b; }
+          .stock-qty-label { font-size:.7rem; color:#9ca3af; text-transform:uppercase; letter-spacing:.06em; }
+          .stock-progress { height:4px; border-radius:2px; background:#f3f4f6; margin-top:6px; overflow:hidden; }
+          .stock-progress-bar { height:100%; border-radius:2px; transition:width .3s; }
+          .stock-nav-badge {
+            background:#ef4444; color:#fff; font-size:9px; font-weight:700;
+            min-width:16px; height:16px; border-radius:8px;
+            display:none; align-items:center; justify-content:center;
+            padding:0 3px; margin-left:6px; vertical-align:middle;
+          }
+        </style>
+
+        <!-- Stock bell icon — add to navbar alongside notif bell -->
+        <style>
+          .stock-bell-wrap {
+            position:relative; display:inline-flex; align-items:center;
+            cursor:pointer; padding:6px; border-radius:8px; transition:background .2s;
+            margin-right:4px;
+          }
+          .stock-bell-wrap:hover { background:rgba(0,0,0,.05); }
+          .stock-bell-wrap i { font-size:1.3rem; color:#6b7280; transition:color .2s; }
+          .stock-bell-wrap:hover i { color:#1E2D40; }
+          .stock-bell-badge {
+            position:absolute; top:2px; right:2px;
+            background:#ef4444; color:#fff; font-size:10px; font-weight:700;
+            min-width:16px; height:16px; border-radius:8px;
+            display:none; align-items:center; justify-content:center; padding:0 3px;
+          }
+        </style>
+
+        <!-- Low stock modal -->
+        <div class="modal fade" id="lowStockModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+               style="max-width:520px;">
+            <div class="modal-content" style="border:none;border-radius:12px;overflow:hidden;">
+
+              <div class="stock-modal-header d-flex align-items-center justify-content-between">
+                <div>
+                  <h5 class="text-white mb-0" style="font-size:.95rem;font-weight:700;">
+                    <i class='bx bx-error-circle me-2' style="color:#ef4444;"></i>
+                    Low Stock Alert
+                    <span id="stockModalCount"
+                          style="background:#ef4444;color:#fff;font-size:10px;
+                                 font-weight:700;padding:2px 9px;border-radius:20px;
+                                 margin-left:6px;"></span>
+                  </h5>
+                  <small style="color:rgba(255,255,255,.5);font-size:.75rem;">
+                    Products with 10 or fewer units remaining
+                  </small>
+                </div>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"></button>
+              </div>
+
+              <div class="modal-body p-0" id="stockModalBody"
+                   style="max-height:420px;overflow-y:auto;">
+                <div class="text-center py-4 text-muted">
+                  <i class='bx bx-loader-alt' style="font-size:2rem;"></i>
+                  <p class="mt-2 mb-0" style="font-size:.88rem;">Checking stock levels…</p>
+                </div>
+              </div>
+
+              <div class="modal-footer" style="border-top:1px solid #f3f4f6;padding:.8rem 1.4rem;">
+                <a href="/productlist" class="btn btn-sm"
+                   style="background:#1E2D40;color:#fff;border-radius:6px;font-size:.82rem;
+                          font-weight:600;padding:6px 14px;text-decoration:none;">
+                  View All Products →
+                </a>
+                <button type="button" class="btn btn-sm btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <script>
+          // ── Low Stock Alert ──────────────────────────────────────────
+          function fetchLowStock(showModal) {
+            fetch('/api/low-stock/', {
+              headers: { 'X-Requested-With': 'XMLHttpRequest' },
+              credentials: 'same-origin'
+            })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              if (!data) return;
+              const count = data.count;
+              const items = data.items;
+
+              // Update badge on stock icon
+              const badge = document.getElementById('stockBellBadge');
+              if (badge) {
+                badge.textContent   = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+              }
+
+              // Update modal count
+              const countEl = document.getElementById('stockModalCount');
+              if (countEl) countEl.textContent = count + ' product' + (count !== 1 ? 's' : '');
+
+              // Render modal body
+              const body = document.getElementById('stockModalBody');
+              if (!body) return;
+
+              if (count === 0) {
+                body.innerHTML = `
+                  <div class="text-center py-4" style="color:#9ca3af;">
+                    <i class='bx bx-check-circle' style="font-size:2.5rem;color:#10b981;display:block;margin-bottom:.5rem;"></i>
+                    All products have sufficient stock.
+                  </div>`;
+              } else {
+                body.innerHTML = items.map(p => {
+                  const isCritical = p.available <= 3;
+                  const pct        = p.total_stock > 0
+                    ? Math.max(0, Math.min(100, (p.available / p.total_stock) * 100))
+                    : 0;
+                  const barColor   = isCritical ? '#ef4444' : '#f59e0b';
+                  const imgHtml    = p.image
+                    ? `<img src="${p.image}" class="stock-img" alt="${escStock(p.name)}" />`
+                    : `<div class="stock-img-placeholder">
+                         <i class='bx bx-package' style="font-size:1.2rem;color:#9ca3af;"></i>
+                       </div>`;
+                  return `
+                    <div class="stock-item">
+                      ${imgHtml}
+                      <div class="stock-info">
+                        <div class="stock-name">${escStock(p.name)}</div>
+                        <div class="stock-brand">${escStock(p.brand)}</div>
+                        <div class="stock-progress">
+                          <div class="stock-progress-bar"
+                               style="width:${pct}%;background:${barColor};"></div>
+                        </div>
+                      </div>
+                      <div class="stock-qty-wrap">
+                        <div class="stock-qty ${isCritical ? 'critical' : 'warning'}">${p.available}</div>
+                        <div class="stock-qty-label">units left</div>
+                      </div>
+                    </div>`;
+                }).join('');
+              }
+
+              // Auto-open on login (showModal=true) only if there are alerts
+              if (showModal && count > 0) {
+                new bootstrap.Modal(document.getElementById('lowStockModal')).show();
+              }
+            })
+            .catch(() => {});
+          }
+
+          function escStock(str) {
+            return String(str || '')
+              .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+              .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+          }
+
+          // ── Run on page load — auto-open on first visit after login ──
+          document.addEventListener('DOMContentLoaded', function() {
+            // Only auto-open on dashboard home page
+            const isHome = window.location.pathname === '/home'
+                        || window.location.pathname === '/home/';
+            fetchLowStock(isHome);
+          });
+        </script>
+        {% endif %}
+
+    </div>
+</body>
+</html>

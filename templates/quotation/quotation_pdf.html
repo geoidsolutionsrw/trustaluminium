@@ -1,0 +1,376 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Quotation #{{ quotationdetail.quo_id }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 9.5px;
+      color: #374151;
+      line-height: 1.4;
+      background: #ffffff;
+      width: 210mm;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ─────────────────────────── */
+    .header-outer {
+      padding: 14px 28px 10px 28px;
+      border-bottom: 3px solid #F07B22;
+      background: #ffffff;
+    }
+    .doc-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #F07B22;
+      line-height: 1;
+    }
+    .meta-lbl {
+      font-weight: bold;
+      color: #1E2D40;
+      font-size: 9px;
+      width: 100px;
+    }
+    .meta-val {
+      font-size: 9px;
+      color: #6b7280;
+    }
+    .logo-box {
+      background-color: #1E2D40;
+      padding: 10px 16px;
+      text-align: center;
+    }
+    .logo-name {
+      font-size: 13px;
+      font-weight: bold;
+      color: #F07B22;
+      letter-spacing: 1px;
+    }
+    .logo-sub {
+      font-size: 7px;
+      color: #aab4c0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── BADGE ───────────────────────────── */
+    .badge-pending  { color: #b45309; font-weight: bold; font-size: 8.5px; }
+    .badge-accepted { color: #166534; font-weight: bold; font-size: 8.5px; }
+    .badge-modified { color: #9a3412; font-weight: bold; font-size: 8.5px; }
+
+    /* ── PARTIES ─────────────────────────── */
+    .parties-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .party-seller {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-right: none;
+      width: 50%;
+      padding: 10px 13px;
+      vertical-align: top;
+    }
+    .party-client {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      width: 50%;
+      padding: 10px 13px;
+      vertical-align: top;
+    }
+    .party-label {
+      font-size: 7px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .party-name {
+      font-size: 11px;
+      font-weight: bold;
+      color: #1E2D40;
+      margin-bottom: 5px;
+    }
+    .info-table { border-collapse: collapse; width: 100%; }
+    .info-table td {
+      font-size: 8.5px;
+      padding: 1px 0;
+      vertical-align: top;
+      border: none;
+      background: transparent;
+    }
+    .info-key { color: #9ca3af; width: 52px; font-size: 8px; }
+    .info-val { color: #374151; }
+    .prep-key { color: #1E2D40; font-weight: bold; width: 52px; font-size: 8.5px; padding-top: 5px; }
+    .prep-val { color: #1E2D40; font-weight: bold; font-size: 8.5px; padding-top: 5px; }
+
+    /* ── ITEMS TABLE ─────────────────────── */
+    .items-table { width: 100%; border-collapse: collapse; }
+    .items-thead-row { background-color: #1E2D40; }
+    .items-th {
+      padding: 7px 9px;
+      font-size: 7.5px;
+      font-weight: bold;
+      color: #ffffff;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: none;
+    }
+    .items-th-right  { text-align: right; }
+    .items-th-center { text-align: center; }
+
+    .row-odd  { background-color: #ffffff; }
+    .row-even { background-color: #f9fafb; }
+
+    .items-td {
+      padding: 6px 9px;
+      font-size: 9px;
+      color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      vertical-align: middle;
+    }
+    .items-td-right  { text-align: right; font-weight: bold; color: #1E2D40; }
+    .items-td-center { text-align: center; }
+    .items-td-name   { font-weight: bold; color: #1E2D40; }
+    .items-td-amount { text-align: right; color: #F07B22; font-weight: bold; }
+    .item-num        { color: #9ca3af; font-size: 8.5px; }
+    .last-row td     { border-bottom: 2px solid #1E2D40; }
+
+    /* ── TOTALS ──────────────────────────── */
+    .totals-outer  { width: 100%; border-collapse: collapse; margin-top: 0; }
+    .totals-spacer { width: 50%; }
+    .totals-right-cell { width: 50%; vertical-align: top; }
+    .totals-inner {
+      width: 100%;
+      border-collapse: collapse;
+      border-left: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      border-bottom: none;
+    }
+    .t-lbl {
+      padding: 6px 12px;
+      font-size: 9px;
+      color: #6b7280;
+      background-color: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: none;
+      border-left: none;
+      border-right: none;
+      width: 55%;
+    }
+    .t-val {
+      padding: 6px 12px;
+      font-size: 9px;
+      color: #1E2D40;
+      font-weight: bold;
+      text-align: right;
+      background-color: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: none;
+      border-left: none;
+      border-right: none;
+    }
+    .t-lbl-grand {
+      padding: 8px 12px;
+      font-size: 10px;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: #1E2D40;
+      border: none;
+      width: 55%;
+    }
+    .t-val-grand {
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #F07B22;
+      text-align: right;
+      background-color: #1E2D40;
+      border: none;
+    }
+
+    /* ── SIGNATURE ───────────────────────── */
+    .sig-outer { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .sig-space { border: none; padding: 0; }
+    .sig-cell  { border: none; padding: 0; text-align: right; width: 50%; }
+    .sig-line-div {
+      border-top: 1.5px solid #1E2D40;
+      padding-top: 5px;
+      text-align: center;
+      margin-top: 28px;
+    }
+    .sig-label {
+      font-size: 8px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── BOTTOM BORDER ───────────────────── */
+    .bottom-accent {
+      height: 4px;
+      background-color: #F07B22;
+      width: 100%;
+      margin-top: 20px;
+      font-size: 0;
+      line-height: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────────────── -->
+<div class="header-outer">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td width="60%" valign="top">
+        <div class="doc-title">Quotation</div>
+        <table border="0" cellpadding="0" cellspacing="0" style="margin-top:7px;">
+          <tr>
+            <td class="meta-lbl">Quotation #</td>
+            <td class="meta-val">{{ quotationdetail.quo_id }}</td>
+          </tr>
+          <tr>
+            <td class="meta-lbl">Quotation Date</td>
+            <td class="meta-val">{{ quotationdetail.date|date:"d M Y"|upper }}</td>
+          </tr>
+          <tr>
+            <td class="meta-lbl">Status</td>
+            <td>
+              {% if quotationdetail.quotation_status == 'ACCEPTED' %}
+                <span class="badge-accepted">&#10003; {{ quotationdetail.quotation_status }}</span>
+              {% elif quotationdetail.quotation_status == 'PENDING' %}
+                <span class="badge-pending">&#9679; {{ quotationdetail.quotation_status }}</span>
+              {% else %}
+                <span class="badge-modified">&#9888; {{ quotationdetail.quotation_status }}</span>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td width="40%" valign="top" align="right">
+        <div class="logo-box">
+          <div class="logo-name">TRUST ALUMINIUM</div>
+          <div class="logo-sub">Hardware &amp; Building Solutions</div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── PARTIES ──────────────────────────────────────── -->
+<table class="parties-table" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="party-seller">
+      <div class="party-label">Quotation by</div>
+      <div class="party-name">Trust Aluminium Ltd</div>
+      <table class="info-table" cellpadding="0" cellspacing="0">
+        <tr><td class="info-key">Address</td><td class="info-val">Kigali &mdash; Remera, KK 13 Ave, Rwanda</td></tr>
+        <tr><td class="info-key">Phone</td><td class="info-val">+250 785 737 917</td></tr>
+        <tr><td class="info-key">TIN</td><td class="info-val">108592160</td></tr>
+        <tr><td class="info-key">Bank</td><td class="info-val">BK A/C 000420774665346</td></tr>
+      </table>
+    </td>
+    <td class="party-client">
+      <div class="party-label">Quotation to</div>
+      <div class="party-name">{{ quotationdetail.customer.customer_name }}</div>
+      <table class="info-table" cellpadding="0" cellspacing="0">
+        {% if quotationdetail.customer.tin %}
+        <tr><td class="info-key">TIN</td><td class="info-val">{{ quotationdetail.customer.tin }}</td></tr>
+        {% endif %}
+        <tr><td class="info-key">Phone</td><td class="info-val">{{ quotationdetail.customer.phone_number }}</td></tr>
+        {% if quotationdetail.customer.address %}
+        <tr><td class="info-key">Address</td><td class="info-val">{{ quotationdetail.customer.address }}</td></tr>
+        {% endif %}
+        {% if quotationdetail.customer.email_address %}
+        <tr><td class="info-key">Email</td><td class="info-val">{{ quotationdetail.customer.email_address }}</td></tr>
+        {% endif %}
+        <tr>
+          {% comment %} <td class="prep-key">Prepared by</td>
+          <td class="prep-val">{{ quotationdetail.creator.get_full_name|default:quotationdetail.creator.username }}</td>
+        {% endcomment %}</tr> 
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!-- ── ITEMS ────────────────────────────────────────── -->
+<table class="items-table" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr class="items-thead-row">
+      <td class="items-th items-th-center" width="24">#</td>
+      <td class="items-th">Item / Product Description</td>
+      <td class="items-th items-th-center" width="36">Qty</td>
+      <td class="items-th items-th-right" width="88">Unit Price (Rwf)</td>
+      <td class="items-th items-th-center" width="46">Tax (%)</td>
+      <td class="items-th items-th-right" width="95">Amount (Rwf)</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in quotationitem %}
+    <tr class="{% if forloop.last %}last-row {% endif %}{% if forloop.counter|divisibleby:2 %}row-even{% else %}row-odd{% endif %}">
+      <td class="items-td items-td-center"><span class="item-num">{{ forloop.counter }}.</span></td>
+      <td class="items-td items-td-name">{{ item.product.product_name }}</td>
+      <td class="items-td items-td-center">{{ item.quantity }}</td>
+      <td class="items-td items-td-right">{{ item.price|floatformat:0 }}</td>
+      <td class="items-td items-td-center">{{ item.tax }}%</td>
+      <td class="items-td items-td-amount">{{ item.subtotal|floatformat:0 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- ── TOTALS ───────────────────────────────────────── -->
+<table class="totals-outer" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="totals-spacer">&nbsp;</td>
+    <td class="totals-right-cell">
+      <table class="totals-inner" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="t-lbl">Sub Total</td>
+          <td class="t-val">{{ quotationdetail.total_amount|floatformat:0 }} Rwf</td>
+        </tr>
+        <tr>
+          <td class="t-lbl">Tax</td>
+          <td class="t-val">Included</td>
+        </tr>
+        <tr>
+          <td class="t-lbl">Discount</td>
+          <td class="t-val">&mdash;</td>
+        </tr>
+        <tr>
+          <td class="t-lbl-grand">Total</td>
+          <td class="t-val-grand">{{ quotationdetail.total_amount|floatformat:0 }} Rwf</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!-- ── SIGNATURE ────────────────────────────────────── -->
+<table class="sig-outer" cellpadding="0" cellspacing="0">
+  <tr>
+    <td class="sig-space" width="50%">&nbsp;</td>
+    <td class="sig-cell" width="50%">
+      <div class="sig-line-div">
+        <span class="sig-label">Authorised Signature</span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<!-- ── BOTTOM ACCENT ────────────────────────────────── -->
+<div class="bottom-accent">&nbsp;</div>
+
+</body>
+</html>

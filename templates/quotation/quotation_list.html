@@ -1,0 +1,723 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Quotation List{% endblock %}
+{% block content %}
+
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Quotation List</h4>
+        <h6>Manage your Quotation</h6>
+      </div>
+      <div class="page-btn">
+        <a href="/add_quotation" class="btn btn-added">
+          <img src="{% static 'img/icons/plus.svg' %}" alt="img" class="me-1" />Add Quotation
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="table-top">
+          <div class="search-set">
+            <div class="search-path">
+              <a class="btn btn-filter" id="filter_search">
+                <img src="{% static 'img/icons/filter.svg' %}" alt="img" />
+                <span><img src="{% static 'img/icons/closes.svg' %}" alt="img" /></span>
+              </a>
+            </div>
+            <div class="search-input">
+              <a class="btn btn-searchset">
+                <img src="{% static 'img/icons/search-white.svg' %}" alt="img" />
+              </a>
+            </div>
+          </div>
+          <div class="wordset">
+            <ul>
+              <li>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf">
+                  <img src="{% static 'img/icons/pdf.svg' %}" alt="img" />
+                </a>
+              </li>
+              <li>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel">
+                  <img src="{% static 'img/icons/excel.svg' %}" alt="img" />
+                </a>
+              </li>
+              <li>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print">
+                  <img src="{% static 'img/icons/printer.svg' %}" alt="img" />
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="card" id="filter_inputs">
+          <div class="card-body pb-0">
+            <div class="row">
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <input type="text" id="searchName" placeholder="Enter Customer Name" class="form-control" />
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <input type="text" id="searchRef" placeholder="Enter Reference No" class="form-control" />
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <select class="select form-select" id="searchStatus">
+                    <option value="">All Statuses</option>
+                    <option value="ACCEPTED">Accepted</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="MODIFICATION REQUESTED">Modification Requested</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <button class="btn btn-filters ms-auto" onclick="filterTable()">
+                    <img src="{% static 'img/icons/search-whites.svg' %}" alt="img" />
+                  </button>
+                  <button class="btn btn-secondary ms-2" onclick="clearFilter()">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table datanew" id="quotationTable">
+            <thead>
+              <tr>
+                <th>
+                  <label class="checkboxs">
+                    <input type="checkbox" id="select-all" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </th>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>Reference</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>TIN</th>
+                <th>Biller</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sale in quotations_data %}
+              <tr class="{% if forloop.first %}newest-row{% endif %}"
+                  {% if forloop.first %}style="background-color: rgba(240,123,34,0.12) !important; border-left: 3px solid #F07B22;"{% endif %}>
+                <td>
+                  <label class="checkboxs">
+                    <input type="checkbox" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </td>
+                <td>{{ sale.date|date:"d M Y" }}</td>
+                <td>
+                  {{ sale.customer_name }}
+                  {% if forloop.first %}
+                    <span class="newest-badge">New</span>
+                  {% endif %}
+                </td>
+
+                <!-- ── Reference = quo_id ── -->
+                <td>
+                  <span style="font-weight:600; color:#1E2D40;">{{ sale.quo_id }}</span>
+                </td>
+
+                <!-- ── Quotation status badge ── -->
+                <td>
+                  {% if sale.quotation_status == "ACCEPTED" %}
+                    <span class="badges bg-lightgreen">Accepted</span>
+                  {% elif sale.quotation_status == "PENDING" %}
+                    <span class="badges bg-lightred">Pending</span>
+                  {% elif sale.quotation_status == "MODIFICATION REQUESTED" %}
+                    <span class="badges bg-lightyellow">Modification Requested</span>
+                  {% else %}
+                    <span class="badges bg-lightred">{{ sale.quotation_status }}</span>
+                  {% endif %}
+                </td>
+
+                <td>{{ sale.total_amount|floatformat:0 }} Rwf</td>
+                <td>
+                  {% if sale.tin and sale.tin != "nan" and sale.tin != "None" %}
+                    {{ sale.tin }}
+                  {% else %}
+                    <span class="text-muted">—</span>
+                  {% endif %}
+                </td>
+                <td>{{ sale.username }}</td>
+
+                <td class="text-center">
+                  <a class="action-set" href="javascript:void(0);"
+                     data-bs-toggle="dropdown" aria-expanded="true">
+                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{% url 'quotation_detail' sale.quo_id %}" class="dropdown-item">
+                        <img src="{% static 'img/icons/eye1.svg' %}" class="me-2" alt="img" />
+                        View Detail
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" class="dropdown-item"
+                         onclick="openEditModal({{ sale.quo_id }})">
+                        <img src="{% static 'img/icons/edit.svg' %}" class="me-2" alt="img" />
+                        Edit Quotation
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{% url 'export_quotation_pdf' sale.quo_id %}" class="dropdown-item">
+                        <img src="{% static 'img/icons/download.svg' %}" class="me-2" alt="img" />
+                        Download PDF
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" class="dropdown-item"
+                         onclick="showDeleteConfirmation('{{ sale.quo_id }}')">
+                        <img src="{% static 'img/icons/delete1.svg' %}" class="me-2" alt="img" />
+                        Delete
+                      </a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="9" class="text-center text-muted py-4">No quotations found.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DELETE CONFIRMATION MODAL ─────────────────────── -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+        <h5>Are you sure?</h5>
+        <p class="text-muted">You won't be able to revert this!</p>
+        <p class="text-muted">Quotation Reference: <strong id="deleteQuotationId"></strong></p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <form id="deleteForm" method="POST">
+          {% csrf_token %}
+          <input type="hidden" id="deleteId" name="quotation_id" value="" />
+          <button type="submit" class="btn btn-danger">Yes, delete it!</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── EDIT QUOTATION MODAL ──────────────────────────────────── -->
+<div class="modal fade" id="editQuotationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border:none;border-radius:12px;overflow:hidden;">
+
+      <!-- Header -->
+      <div class="modal-header" style="background:#1E2D40;padding:1rem 1.5rem;border:none;">
+        <div>
+          <h5 class="modal-title text-white mb-0" style="font-size:1.05rem;font-weight:700;">
+            <i class="fa fa-edit me-2" style="color:#F07B22;"></i>
+            Edit Quotation <span id="editModalRef" style="color:#F07B22;"></span>
+          </h5>
+          <small style="color:rgba(255,255,255,.5);font-size:.78rem;">Update customer, date, status and products</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form id="editQuotationForm">
+        {% csrf_token %}
+        <div class="modal-body" style="padding:1.5rem;background:#fff;">
+
+          <!-- Customer / Date / Status row -->
+          <div class="row g-3 mb-4">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label">Customer</label>
+                <!-- Searchable select with free-type option -->
+                <input list="editCustomerList" id="editCustomerInput"
+                       name="customer_name_input"
+                       class="form-control select"
+                       placeholder="Type or select customer"
+                       autocomplete="off" required />
+                <datalist id="editCustomerList">
+                  {% for c in customers %}
+                    <option value="{{ c.customer_name }}" data-id="{{ c.cust_id }}">
+                  {% endfor %}
+                </datalist>
+                <!-- Hidden field stores matched customer id -->
+                <input type="hidden" id="editCustomerId" name="customer" />
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label">Quotation Date</label>
+                <div class="input-groupicon">
+                  <input type="date" name="quotation_date" id="editDate"
+                         class="form-control" required />
+                  <a class="addonset">
+                    <img src="{% static 'img/icons/calendars.svg' %}" alt="calendar" />
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label">Status</label>
+                <select name="quotation_status" id="editStatus" class="select form-control" required>
+                  <option value="PENDING">Pending</option>
+                  <option value="ACCEPTED">Accepted</option>
+                  <option value="MODIFICATION REQUESTED">Modification Requested</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add product row -->
+          <div class="row g-2 mb-3 align-items-end" id="edit-add-product-row"
+               style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px 8px;">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Product Name</label>
+                <select class="form-control select2" id="editProductSelect">
+                  <option value="">Select Product</option>
+                  {% for product in products %}
+                    <option value="{{ product.productid }}"
+                            data-price="{{ product.price|default:0 }}"
+                            data-name="{{ product.product_name }}">
+                      {{ product.product_name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Price</label>
+                <input type="number" id="editAddPrice" class="form-control"
+                       step="0.01" min="0" placeholder="0.00" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Quantity</label>
+                <input type="number" id="editAddQty" class="form-control"
+                       min="1" value="1" placeholder="1" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Tax (%)</label>
+                <input type="number" id="editAddTax" class="form-control"
+                       min="0" max="100" value="0" placeholder="0" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">&nbsp;</label>
+                <button type="button" class="btn btn-added w-100"
+                        onclick="addEditProductToTable()">
+                  <img src="{% static 'img/icons/plus.svg' %}" alt="add" class="me-1" style="width:14px;" />
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products table -->
+          <div class="table-responsive mb-3">
+            <table class="table" id="editProductsTable">
+              <thead style="background:#f3f2f7;">
+                <tr>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">#</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Product Name</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">QTY</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Price</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Tax %</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Subtotal</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;"></th>
+                </tr>
+              </thead>
+              <tbody id="editProductsTableBody">
+                <tr id="editEmptyRow">
+                  <td colspan="7" class="text-center text-muted py-3" style="font-size:.88rem;">
+                    No products added yet
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Totals -->
+          <div class="row">
+            <div class="col-lg-6 ms-auto">
+              <div class="total-order w-100 max-widthauto m-auto mb-2">
+                <ul>
+                  <li style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6;">
+                    <h4 style="font-size:.9rem;color:#6b7280;">Tax Total</h4>
+                    <h5 style="font-size:.9rem;"><span id="editTaxTotal">0.00</span> Rwf</h5>
+                  </li>
+                  <li class="total" style="display:flex;justify-content:space-between;padding:10px 0;">
+                    <h4 style="font-size:1rem;font-weight:700;color:#1E2D40;">Grand Total</h4>
+                    <h5 style="font-size:1.1rem;font-weight:700;color:#F07B22;">
+                      Rwf <span id="editGrandTotal">0.00</span>
+                    </h5>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer" style="border-top:1px solid #f3f4f6;padding:1rem 1.5rem;">
+          <a href="#" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</a>
+          <button type="submit" class="btn btn-submit" id="editSubmitBtn">
+            <i class="fa fa-save me-1"></i>Save Changes
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+<style>
+  /* ── Edit modal item rows ── */
+  .edit-item-row { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:12px; margin-bottom:10px; position:relative; }
+  .btn-remove-item-edit { position:absolute; top:8px; right:10px; background:none; border:none; color:#f87171; font-size:1.2rem; cursor:pointer; }
+  /* ── Newest quotation row highlight ── */
+  tr.newest-row,
+  tr.newest-row td {
+    background-color: rgba(240, 123, 34, 0.12) !important;
+  }
+  tr.newest-row {
+    border-left: 3px solid #F07B22;
+    transition: background-color .3s;
+  }
+  tr.newest-row:hover,
+  tr.newest-row:hover td {
+    background-color: rgba(240, 123, 34, 0.22) !important;
+  }
+  .newest-badge {
+    background: #F07B22;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+</style>
+
+{% block javascript %}
+<script>
+  /* ── Select all checkboxes ── */
+  document.getElementById('select-all').addEventListener('change', function() {
+    document.querySelectorAll('tbody input[type="checkbox"]').forEach(cb => cb.checked = this.checked);
+  });
+
+  /* ── Delete modal ── */
+  function showDeleteConfirmation(quotationId) {
+    document.getElementById('deleteId').value        = quotationId;
+    document.getElementById('deleteForm').action     = `/quotation/delete/${quotationId}/`;
+    document.getElementById('deleteQuotationId').textContent = '#' + quotationId;
+    new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+  }
+
+  document.getElementById('deleteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const quotationId = document.getElementById('deleteId').value;
+    fetch(`/quotation/delete/${quotationId}/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': this.querySelector('[name=csrfmiddlewaretoken]').value },
+    })
+    .then(r => {
+      if (r.ok) window.location.reload();
+      else alert('Failed to delete quotation. Please try again.');
+    })
+    .catch(() => alert('Failed to delete quotation. Please try again.'));
+  });
+
+  /* ── Client-side filter ── */
+  function filterTable() {
+    const name   = document.getElementById('searchName').value.toLowerCase();
+    const ref    = document.getElementById('searchRef').value.toLowerCase();
+    const status = document.getElementById('searchStatus').value.toLowerCase();
+    document.querySelectorAll('#quotationTable tbody tr').forEach(row => {
+      const rowName   = row.cells[2]?.textContent.toLowerCase() || '';
+      const rowRef    = row.cells[3]?.textContent.toLowerCase() || '';
+      const rowStatus = row.cells[4]?.textContent.toLowerCase() || '';
+      const match = rowName.includes(name) && rowRef.includes(ref) && rowStatus.includes(status);
+      row.style.display = match ? '' : 'none';
+    });
+  }
+
+  function clearFilter() {
+    document.getElementById('searchName').value  = '';
+    document.getElementById('searchRef').value   = '';
+    document.getElementById('searchStatus').value = '';
+    document.querySelectorAll('#quotationTable tbody tr').forEach(r => r.style.display = '');
+  }
+
+  /* ── Live search on name input ── */
+  document.getElementById('searchName').addEventListener('keyup', filterTable);
+  document.getElementById('searchRef').addEventListener('keyup', filterTable);
+
+  // ── Edit modal — table-based approach matching add_quotation style ──
+
+  // Customer map for id lookup
+  const CUSTOMER_MAP = {
+    {% for c in customers %}
+    "{{ c.customer_name|escapejs }}": {{ c.cust_id }},
+    {% endfor %}
+  };
+
+  let currentEditId  = null;
+  let editProducts   = [];   // [{id, name, quantity, price, tax, subtotal}]
+
+  // ── Auto-fill price when product selected in add row ──
+  document.getElementById('editProductSelect').addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    if (opt.value) {
+      document.getElementById('editAddPrice').value = opt.dataset.price || 0;
+      document.getElementById('editAddQty').value   = 1;
+      document.getElementById('editAddTax').value   = 0;
+    }
+  });
+
+  // ── Customer input: resolve to ID on change ──
+  document.getElementById('editCustomerInput').addEventListener('change', function() {
+    const name = this.value.trim();
+    const id   = CUSTOMER_MAP[name] || '';
+    document.getElementById('editCustomerId').value = id;
+  });
+
+  // ── Add product to table ──
+  function addEditProductToTable() {
+    const select = document.getElementById('editProductSelect');
+    const price  = parseFloat(document.getElementById('editAddPrice').value) || 0;
+    const qty    = parseInt(document.getElementById('editAddQty').value)     || 1;
+    const tax    = parseFloat(document.getElementById('editAddTax').value)   || 0;
+
+    if (!select.value) { alert('Please select a product.'); return; }
+
+    const opt      = select.options[select.selectedIndex];
+    const subtotal = qty * price * (1 + tax / 100);
+
+    editProducts.push({
+      id:       select.value,
+      name:     opt.dataset.name || opt.text,
+      quantity: qty,
+      price:    price,
+      tax:      tax,
+      subtotal: subtotal,
+    });
+
+    renderEditTable();
+
+    // Reset add row
+    select.value = '';
+    document.getElementById('editAddPrice').value = '';
+    document.getElementById('editAddQty').value   = 1;
+    document.getElementById('editAddTax').value   = 0;
+  }
+
+  // ── Render products table ──
+  function renderEditTable() {
+    const tbody = document.getElementById('editProductsTableBody');
+    const empty = document.getElementById('editEmptyRow');
+
+    if (editProducts.length === 0) {
+      tbody.innerHTML = `<tr id="editEmptyRow">
+        <td colspan="7" class="text-center text-muted py-3" style="font-size:.88rem;">
+          No products added yet
+        </td></tr>`;
+      updateEditTotals();
+      return;
+    }
+
+    tbody.innerHTML = editProducts.map((p, i) => `
+      <tr style="border-bottom:1px solid #f3f4f6;">
+        <td style="padding:8px 10px;color:#9ca3af;">${i + 1}</td>
+        <td style="padding:8px 10px;font-weight:600;color:#1E2D40;">${escHtmlEdit(p.name)}</td>
+        <td style="padding:8px 10px;">
+          <input type="number" class="form-control form-control-sm"
+                 style="width:70px;" min="1" value="${p.quantity}"
+                 onchange="updateEditRow(${i},'quantity',this.value)" />
+        </td>
+        <td style="padding:8px 10px;">
+          <input type="number" class="form-control form-control-sm"
+                 style="width:100px;" min="0" step="0.01" value="${p.price}"
+                 onchange="updateEditRow(${i},'price',this.value)" />
+        </td>
+        <td style="padding:8px 10px;">
+          <input type="number" class="form-control form-control-sm"
+                 style="width:70px;" min="0" max="100" value="${p.tax}"
+                 onchange="updateEditRow(${i},'tax',this.value)" />
+        </td>
+        <td style="padding:8px 10px;color:#F07B22;font-weight:700;">
+          ${p.subtotal.toLocaleString(undefined,{minimumFractionDigits:0})} Rwf
+        </td>
+        <td style="padding:8px 10px;">
+          <button type="button" class="btn btn-danger btn-sm"
+                  onclick="removeEditRow(${i})">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+
+    updateEditTotals();
+  }
+
+  // ── Inline edit update ──
+  function updateEditRow(index, field, value) {
+    editProducts[index][field] = parseFloat(value) || 0;
+    const p = editProducts[index];
+    p.subtotal = p.quantity * p.price * (1 + p.tax / 100);
+    renderEditTable();
+  }
+
+  function removeEditRow(index) {
+    editProducts.splice(index, 1);
+    renderEditTable();
+  }
+
+  // ── Update totals ──
+  function updateEditTotals() {
+    const taxTotal   = editProducts.reduce((s,p) => s + (p.quantity * p.price * p.tax / 100), 0);
+    const grandTotal = editProducts.reduce((s,p) => s + p.subtotal, 0);
+    document.getElementById('editTaxTotal').textContent   = taxTotal.toFixed(2);
+    document.getElementById('editGrandTotal').textContent = grandTotal.toLocaleString(undefined,{minimumFractionDigits:0});
+  }
+
+  // ── Open modal and prefill ──
+  function openEditModal(quotationId) {
+    currentEditId = quotationId;
+    editProducts  = [];
+    document.getElementById('editModalRef').textContent = '#' + quotationId;
+    document.getElementById('editProductsTableBody').innerHTML =
+      `<tr id="editEmptyRow"><td colspan="7" class="text-center text-muted py-3">Loading…</td></tr>`;
+
+    fetch(`/quotation/edit/${quotationId}/`, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) { alert('Could not load quotation data.'); return; }
+      const q = data.quotation;
+
+      // Prefill header
+      document.getElementById('editCustomerInput').value = q.customer_name;
+      document.getElementById('editCustomerId').value    = q.customer_id;
+      document.getElementById('editDate').value          = q.date;
+      document.getElementById('editStatus').value        = q.quotation_status;
+
+      // Prefill products
+      editProducts = q.items.map(item => ({
+        id:       item.product_id,
+        name:     item.product_name,
+        quantity: parseFloat(item.quantity),
+        price:    parseFloat(item.price),
+        tax:      parseFloat(item.tax),
+        subtotal: parseFloat(item.subtotal),
+      }));
+      renderEditTable();
+
+      new bootstrap.Modal(document.getElementById('editQuotationModal')).show();
+    })
+    .catch(() => alert('Error loading quotation.'));
+  }
+
+  // ── Form submit ──
+  document.getElementById('editQuotationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('editSubmitBtn');
+
+    if (editProducts.length === 0) {
+      alert('Please add at least one product.');
+      return;
+    }
+
+    // Resolve customer — use ID if found, else send name as-is (view handles it)
+    const customerName = document.getElementById('editCustomerInput').value.trim();
+    const customerId   = document.getElementById('editCustomerId').value
+                         || CUSTOMER_MAP[customerName]
+                         || '';
+
+    btn.disabled    = true;
+    btn.textContent = 'Saving…';
+
+    const fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fd.append('customer',            customerId);
+    fd.append('customer_name',       customerName);
+    fd.append('quotation_date',      document.getElementById('editDate').value);
+    fd.append('quotation_status',    document.getElementById('editStatus').value);
+    fd.append('products',            JSON.stringify(editProducts.map(p => ({
+      id:       p.id,
+      quantity: p.quantity,
+      price:    p.price,
+      tax:      p.tax,
+      subtotal: p.subtotal,
+    }))));
+
+    fetch(`/quotation/edit/${currentEditId}/`, {
+      method:  'POST',
+      body:    fd,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        window.location.reload();
+      } else {
+        alert('Error: ' + (data.error || 'Unknown error'));
+        btn.disabled    = false;
+        btn.textContent = 'Save Changes';
+      }
+    })
+    .catch(() => {
+      alert('Network error. Please try again.');
+      btn.disabled    = false;
+      btn.textContent = 'Save Changes';
+    });
+  });
+
+  function escHtmlEdit(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+{% endblock %}

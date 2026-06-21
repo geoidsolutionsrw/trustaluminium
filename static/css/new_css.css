@@ -1,0 +1,173 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  line-height: 1.7;
+  color: #333;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #0066cc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+/* Carousel Styles */
+.carousel .img-size {
+  height: 70vh;
+  object-fit: cover;
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 5px;
+}
+
+/* Services Section */
+#Services {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.service {
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.service:hover {
+  transform: translateY(-5px);
+}
+
+.iconbox {
+  width: 70px;
+  height: 70px;
+  background-color: #0066cc;
+  color: white;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconbox i {
+  font-size: 32px;
+}
+
+/* Projects Section */
+#Projects {
+  padding: 80px 0;
+}
+
+.project {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+
+.project img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.project .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 102, 204, 0.8);
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.project:hover .overlay {
+  opacity: 1;
+}
+
+/* Product Cards */
+.card {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+  margin-bottom: 30px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-img-top.img-fit {
+  height: 250px;
+  object-fit: cover;
+}
+
+.btn-outline-primary {
+  color: #0066cc;
+  border-color: #0066cc;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0066cc;
+  color: white;
+}
+
+/* Footer */
+footer {
+  background-color: #f8f9fa;
+  padding: 20px 0;
+}
+
+footer i {
+  font-size: 24px;
+  color: #0066cc;
+  margin-left: 15px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+footer i:hover {
+  color: #004d99;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .carousel .img-size {
+    height: 50vh;
+  }
+  
+  .service {
+    margin-bottom: 30px;
+  }
+  
+  .project img {
+    height: 250px;
+  }
+}

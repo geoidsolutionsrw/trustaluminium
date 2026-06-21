@@ -1,0 +1,8 @@
+import sys, os
+venv_path = '/home4/cpozehmk/virtualenv/trust_aluminium/lib64/python3.8/site-packages'
+sys.path.insert(0, venv_path)
+project_path = '/home4/cpozehmk/trust_aluminium'
+sys.path.insert(0, project_path)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'trust_aluminium.settings')
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()

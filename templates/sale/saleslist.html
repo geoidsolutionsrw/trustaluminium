@@ -1,0 +1,615 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Sales List{% endblock %}
+{% block content %}
+
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Sales List</h4>
+        <h6>Manage your sales</h6>
+      </div>
+      <div class="page-btn">
+        <a href="/addsales" class="btn btn-added">
+          <img src="{% static 'img/icons/plus.svg' %}" alt="img" class="me-1" />Add Sales
+        </a>
+      </div>
+    </div>
+
+    <!-- ── KPI Indicators ── -->
+    <div class="row">
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash1.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ total_expected_amount }}">0</span> <small>Rwf</small></h5>
+            <h6>Expected Today</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash1">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash2.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ paid_sales_today }}">0</span> <small>Rwf</small></h5>
+            <h6>Paid Today</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash2">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash3.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ balance_sales }}">0</span> <small>Rwf</small></h5>
+            <h6>Unpaid Today</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash3">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash4.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ paid_sales_yesterday }}">0</span> <small>Rwf</small></h5>
+            <h6>Paid Yesterday</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="table-top">
+          <div class="search-set">
+            <div class="search-path">
+              <a class="btn btn-filter" id="filter_search">
+                <img src="{% static 'img/icons/filter.svg' %}" alt="img" />
+                <span><img src="{% static 'img/icons/closes.svg' %}" alt="img" /></span>
+              </a>
+            </div>
+            <div class="search-input">
+              <a class="btn btn-searchset">
+                <img src="{% static 'img/icons/search-white.svg' %}" alt="img" />
+              </a>
+            </div>
+          </div>
+          <div class="wordset">
+            <ul>
+              <li><a data-bs-toggle="tooltip" title="pdf"><img src="{% static 'img/icons/pdf.svg' %}" alt="img" /></a></li>
+              <li><a data-bs-toggle="tooltip" title="excel"><img src="{% static 'img/icons/excel.svg' %}" alt="img" /></a></li>
+              <li><a data-bs-toggle="tooltip" title="print"><img src="{% static 'img/icons/printer.svg' %}" alt="img" /></a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="card" id="filter_inputs">
+          <div class="card-body pb-0">
+            <div class="row">
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <input type="text" id="searchName" class="form-control" placeholder="Customer name" />
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <input type="text" id="searchRef" class="form-control" placeholder="Reference / Sale ID" />
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <select class="select form-select" id="searchStatus">
+                    <option value="">All Statuses</option>
+                    <option value="FULL">Full</option>
+                    <option value="PARTIAL">Partial</option>
+                    <option value="PENDING">Pending</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-6 col-12">
+                <div class="form-group d-flex gap-2">
+                  <button class="btn btn-filters" onclick="filterTable()">
+                    <img src="{% static 'img/icons/search-whites.svg' %}" alt="img" />
+                  </button>
+                  <button class="btn btn-secondary" onclick="clearFilter()">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table datanew" id="salesTable">
+            <thead>
+              <tr>
+                <th>
+                  <label class="checkboxs">
+                    <input type="checkbox" id="select-all" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </th>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>TIN</th>
+                <th>Reference</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Balance</th>
+                <th>Completion</th>
+                <th>Biller</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sale in sales_data %}
+              <tr>
+                <td>
+                  <label class="checkboxs">
+                    <input type="checkbox" /><span class="checkmarks"></span>
+                  </label>
+                </td>
+                <td>{{ sale.date|date:"d M Y" }}</td>
+                <td>{{ sale.customer_name }}</td>
+                <td>{% if sale.tin %}{{ sale.tin }}{% else %}—{% endif %}</td>
+                <td><strong>{{ sale.sale_id }}</strong></td>
+                <td>
+                  {% if sale.payment_status == "FULL" %}
+                    <span class="badges bg-lightgreen">{{ sale.payment_status }}</span>
+                  {% elif sale.payment_status == "PENDING" %}
+                    <span class="badges bg-lightred">{{ sale.payment_status }}</span>
+                  {% elif sale.payment_status == "PARTIAL" %}
+                    <span class="badges bg-lightyellow">{{ sale.payment_status }}</span>
+                  {% endif %}
+                </td>
+                <td>{{ sale.total_amount|floatformat:0 }}</td>
+                <td>{{ sale.paid_amount|floatformat:0 }}</td>
+                <td class="text-red">{{ sale.balance|floatformat:0 }}</td>
+                <td>
+                  {% if sale.payment_completion == "Complete" %}
+                    <span class="badges bg-lightgreen">{{ sale.payment_completion }}</span>
+                  {% else %}
+                    <span class="badges bg-lightred">{{ sale.payment_completion }}</span>
+                  {% endif %}
+                </td>
+                <td>{{ sale.username }}</td>
+                <td class="text-center">
+                  <a class="action-set" href="javascript:void(0);"
+                     data-bs-toggle="dropdown" aria-expanded="true">
+                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="{% url 'sale_detail' sale.sale_id %}" class="dropdown-item">
+                        <img src="{% static 'img/icons/eye1.svg' %}" class="me-2" alt="img" />Sale Detail
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" class="dropdown-item"
+                         onclick="openEditSaleModal({{ sale.sale_id }})">
+                        <img src="{% static 'img/icons/edit.svg' %}" class="me-2" alt="img" />Edit Sale
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/create_payment" class="dropdown-item">
+                        <img src="{% static 'img/icons/plus-circle.svg' %}" class="me-2" alt="img" />Create Payment
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" class="dropdown-item"
+                         onclick="showDeleteConfirmation('{{ sale.sale_id }}')">
+                        <img src="{% static 'img/icons/delete1.svg' %}" class="me-2" alt="img" />Delete Sale
+                      </a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="12" class="text-center text-muted py-4">No sales found.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DELETE MODAL ── -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+        <h5>Are you sure?</h5>
+        <p class="text-muted">This action cannot be reversed.</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <form id="deleteForm" method="POST">
+          {% csrf_token %}
+          <input type="hidden" id="deleteId" name="sale_id" value="" />
+          <button type="submit" class="btn btn-danger">Yes, delete it!</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT SALE MODAL ── -->
+<div class="modal fade" id="editSaleModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border:none;border-radius:12px;overflow:hidden;">
+      <div class="modal-header" style="background:#1E2D40;padding:1rem 1.5rem;border:none;">
+        <div>
+          <h5 class="modal-title text-white mb-0" style="font-size:1.05rem;font-weight:700;">
+            <i class="fa fa-edit me-2" style="color:#F07B22;"></i>
+            Edit Sale <span id="editSaleRef" style="color:#F07B22;"></span>
+          </h5>
+          <small style="color:rgba(255,255,255,.5);font-size:.78rem;">Update customer, date, status and products</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="editSaleForm">
+        {% csrf_token %}
+        <div class="modal-body" style="padding:1.5rem;background:#fff;">
+          <!-- Header fields -->
+          <div class="row g-3 mb-4">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label">Customer</label>
+                <select name="customer" id="editSaleCustomer" class="select form-control" required>
+                  <option value="">Choose Customer</option>
+                  {% for c in customers %}
+                    <option value="{{ c.cust_id }}">{{ c.customer_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label">Sale Date</label>
+                <div class="input-groupicon">
+                  <input type="date" name="sale_date" id="editSaleDate" class="form-control" required />
+                  <a class="addonset"><img src="{% static 'img/icons/calendars.svg' %}" alt="cal" /></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label">Payment Status</label>
+                <select name="payment_status" id="editSaleStatus" class="select form-control" required>
+                  <option value="FULL">Full Payment</option>
+                  <option value="PARTIAL">Partial Payment</option>
+                  <option value="PENDING">Pending</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Add product row -->
+          <div class="row g-2 mb-3 align-items-end"
+               style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px 8px;">
+            <div class="col-lg-4 col-sm-6 col-12">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Product Name</label>
+                <select class="form-control select" id="editSaleProductSelect">
+                  <option value="">Select Product</option>
+                  {% for product in products %}
+                    <option value="{{ product.productid }}"
+                            data-price="{{ product.price|default:0 }}"
+                            data-name="{{ product.product_name }}"
+                            data-stock="{{ product.quantity|default:0 }}">
+                      {{ product.product_name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Price</label>
+                <input type="number" id="editSaleAddPrice" class="form-control" step="0.01" min="0" placeholder="0.00" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Quantity</label>
+                <input type="number" id="editSaleAddQty" class="form-control" min="1" value="1" />
+                <small class="text-muted" id="editSaleStockInfo" style="font-size:.75rem;"></small>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0">
+                <label class="form-label" style="font-size:.82rem;">Tax (%)</label>
+                <input type="number" id="editSaleAddTax" class="form-control" min="0" max="100" value="0" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-4 col-6">
+              <div class="form-group mb-0 mt-4">
+                <div class="page-btn">
+                  <button type="button" class="btn btn-added w-100" onclick="addSaleProductToTable()">
+                    <img src="{% static 'img/icons/plus.svg' %}" alt="add" style="width:14px;" class="me-1" />Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Products table -->
+          <div class="table-responsive mb-3">
+            <table class="table" id="editSaleProductsTable">
+              <thead style="background:#f3f2f7;">
+                <tr>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">#</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Product Name</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">QTY</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Price</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Tax %</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;">Subtotal</th>
+                  <th style="color:#5e5873;font-size:13px;padding:10px;"></th>
+                </tr>
+              </thead>
+              <tbody id="editSaleProductsBody">
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-3" style="font-size:.88rem;">No products added yet</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Totals -->
+          <div class="row">
+            <div class="col-lg-6 ms-auto">
+              <div class="total-order w-100 max-widthauto m-auto mb-2">
+                <ul>
+                  <li><h4>Tax Total</h4><h5><span id="editSaleTaxTotal">0.00</span> Rwf</h5></li>
+                  <li class="total"><h4>Grand Total</h4><h5>Rwf <span id="editSaleGrandTotal">0.00</span></h5></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid #f3f4f6;padding:1rem 1.5rem;">
+          <a href="#" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</a>
+          <button type="submit" class="btn btn-submit" id="editSaleSubmitBtn">
+            <i class="fa fa-save me-1"></i>Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+  /* ── Select all ── */
+  document.getElementById('select-all').addEventListener('change', function() {
+    document.querySelectorAll('tbody input[type="checkbox"]').forEach(cb => cb.checked = this.checked);
+  });
+
+  /* ── Filter ── */
+  function filterTable() {
+    const name   = document.getElementById('searchName').value.toLowerCase();
+    const ref    = document.getElementById('searchRef').value.toLowerCase();
+    const status = document.getElementById('searchStatus').value.toLowerCase();
+    document.querySelectorAll('#salesTable tbody tr').forEach(row => {
+      if (row.cells.length < 2) return;
+      const match = (row.cells[2]?.textContent || '').toLowerCase().includes(name)
+                 && (row.cells[4]?.textContent || '').toLowerCase().includes(ref)
+                 && (row.cells[5]?.textContent || '').toLowerCase().includes(status);
+      row.style.display = match ? '' : 'none';
+    });
+  }
+  function clearFilter() {
+    document.getElementById('searchName').value   = '';
+    document.getElementById('searchRef').value    = '';
+    document.getElementById('searchStatus').value = '';
+    document.querySelectorAll('#salesTable tbody tr').forEach(r => r.style.display = '');
+  }
+  document.getElementById('searchName').addEventListener('keyup', filterTable);
+  document.getElementById('searchRef').addEventListener('keyup', filterTable);
+
+  /* ── Delete ── */
+  function showDeleteConfirmation(saleId) {
+    document.getElementById('deleteId').value    = saleId;
+    document.getElementById('deleteForm').action = `/delete_sale/${saleId}/`;
+    new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+  }
+  document.getElementById('deleteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const saleId = document.getElementById('deleteId').value;
+    fetch(`/delete_sale/${saleId}/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': this.querySelector('[name=csrfmiddlewaretoken]').value },
+      body: new FormData(this),
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+        location.reload();
+      }
+    })
+    .catch(err => console.error('Delete error:', err));
+  });
+
+  /* ── Edit Sale Modal ── */
+  let currentSaleId = null;
+  let editSaleItems = [];
+
+  /* Auto-fill price when product selected */
+  document.getElementById('editSaleProductSelect').addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    if (opt.value) {
+      document.getElementById('editSaleAddPrice').value = opt.dataset.price || 0;
+      document.getElementById('editSaleAddQty').value   = 1;
+      document.getElementById('editSaleAddTax').value   = 0;
+      document.getElementById('editSaleStockInfo').textContent =
+        opt.dataset.stock ? `Available: ${opt.dataset.stock}` : '';
+    }
+  });
+
+  /* Add product row to table */
+  function addSaleProductToTable() {
+    const select = document.getElementById('editSaleProductSelect');
+    const price  = parseFloat(document.getElementById('editSaleAddPrice').value) || 0;
+    const qty    = parseInt(document.getElementById('editSaleAddQty').value)     || 1;
+    const tax    = parseFloat(document.getElementById('editSaleAddTax').value)   || 0;
+    if (!select.value) { alert('Please select a product.'); return; }
+    const opt = select.options[select.selectedIndex];
+    editSaleItems.push({
+      id: select.value, name: opt.dataset.name || opt.text,
+      quantity: qty, price: price, tax: tax,
+      subtotal: qty * price * (1 + tax / 100),
+    });
+    renderSaleTable();
+    select.value = '';
+    document.getElementById('editSaleAddPrice').value = '';
+    document.getElementById('editSaleAddQty').value   = 1;
+    document.getElementById('editSaleAddTax').value   = 0;
+    document.getElementById('editSaleStockInfo').textContent = '';
+  }
+
+  /* Render table rows */
+  function renderSaleTable() {
+    const tbody = document.getElementById('editSaleProductsBody');
+    if (editSaleItems.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-3" style="font-size:.88rem;">No products added yet</td></tr>`;
+      updateSaleTotals(); return;
+    }
+    tbody.innerHTML = editSaleItems.map((p, i) => `
+      <tr style="border-bottom:1px solid #e9ecef;">
+        <td style="padding:10px;color:#9ca3af;">${i + 1}</td>
+        <td style="padding:10px;color:#555;font-weight:500;">${escSale(p.name)}</td>
+        <td style="padding:10px;">
+          <input type="number" class="form-control form-control-sm" style="width:70px;"
+                 min="1" value="${p.quantity}"
+                 onchange="updateSaleRow(${i},'quantity',this.value)" />
+        </td>
+        <td style="padding:10px;">
+          <input type="number" class="form-control form-control-sm" style="width:100px;"
+                 min="0" step="0.01" value="${p.price}"
+                 onchange="updateSaleRow(${i},'price',this.value)" />
+        </td>
+        <td style="padding:10px;">
+          <input type="number" class="form-control form-control-sm" style="width:70px;"
+                 min="0" max="100" value="${p.tax}"
+                 onchange="updateSaleRow(${i},'tax',this.value)" />
+        </td>
+        <td style="padding:10px;color:#2e7d32;font-weight:500;">
+          ${p.subtotal.toLocaleString(undefined,{minimumFractionDigits:0})} Rwf
+        </td>
+        <td style="padding:10px;">
+          <button type="button" class="btn btn-danger btn-sm" onclick="removeSaleRow(${i})">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>`).join('');
+    updateSaleTotals();
+  }
+
+  function updateSaleRow(i, field, value) {
+    editSaleItems[i][field] = parseFloat(value) || 0;
+    const p = editSaleItems[i];
+    p.subtotal = p.quantity * p.price * (1 + p.tax / 100);
+    renderSaleTable();
+  }
+
+  function removeSaleRow(i) {
+    editSaleItems.splice(i, 1);
+    renderSaleTable();
+  }
+
+  function updateSaleTotals() {
+    const tax   = editSaleItems.reduce((s,p) => s + (p.quantity * p.price * p.tax / 100), 0);
+    const total = editSaleItems.reduce((s,p) => s + p.subtotal, 0);
+    document.getElementById('editSaleTaxTotal').textContent   = tax.toFixed(2);
+    document.getElementById('editSaleGrandTotal').textContent = total.toLocaleString(undefined,{minimumFractionDigits:0});
+  }
+
+  /* Open modal and prefill data */
+  function openEditSaleModal(saleId) {
+    currentSaleId = saleId;
+    editSaleItems = [];
+    document.getElementById('editSaleRef').textContent = '#' + saleId;
+    document.getElementById('editSaleProductsBody').innerHTML =
+      `<tr><td colspan="7" class="text-center text-muted py-3">Loading…</td></tr>`;
+
+    fetch(`/edit_sales/${saleId}/`, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) { alert('Could not load sale data.'); return; }
+      const s = data.sale;
+      document.getElementById('editSaleCustomer').value = s.customer_id;
+      document.getElementById('editSaleDate').value     = s.date;
+      document.getElementById('editSaleStatus').value   = s.payment_status;
+      editSaleItems = s.items.map(item => ({
+        id:       item.product_id,
+        name:     item.product_name,
+        quantity: parseFloat(item.quantity),
+        price:    parseFloat(item.price),
+        tax:      parseFloat(item.tax),
+        subtotal: parseFloat(item.subtotal),
+      }));
+      renderSaleTable();
+      new bootstrap.Modal(document.getElementById('editSaleModal')).show();
+    })
+    .catch(() => alert('Error loading sale data.'));
+  }
+
+  /* Submit form */
+  document.getElementById('editSaleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (editSaleItems.length === 0) { alert('Please add at least one product.'); return; }
+    const btn = document.getElementById('editSaleSubmitBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    const fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fd.append('customer',       document.getElementById('editSaleCustomer').value);
+    fd.append('sale_date',      document.getElementById('editSaleDate').value);
+    fd.append('payment_status', document.getElementById('editSaleStatus').value);
+    fd.append('products', JSON.stringify(editSaleItems.map(p => ({
+      id: p.id, quantity: p.quantity, price: p.price, tax: p.tax, subtotal: p.subtotal,
+    }))));
+
+    fetch(`/edit_sales/${currentSaleId}/`, {
+      method: 'POST', body: fd,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        window.location.reload();
+      } else {
+        alert('Error: ' + (data.error || 'Unknown error'));
+        btn.disabled = false; btn.textContent = 'Save Changes';
+      }
+    })
+    .catch(() => {
+      alert('Network error. Please try again.');
+      btn.disabled = false; btn.textContent = 'Save Changes';
+    });
+  });
+
+  function escSale(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+{% endblock %}

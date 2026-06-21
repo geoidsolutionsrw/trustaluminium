@@ -1,0 +1,454 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<style>
+  .growth-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
+  .growth-up   { background: #d1fae5; color: #065f46; }
+  .growth-down { background: #fee2e2; color: #991b1b; }
+  .period-btn  { border-radius: 20px; padding: 4px 14px; font-size: 0.8rem; margin-right: 4px; border: 1px solid #dee2e6; background: #fff; cursor: pointer; transition: all .2s; }
+  .period-btn.active, .period-btn:hover { background: #1E3A5F; color: #fff; border-color: #1E3A5F; }
+  .chart-period-btn { border-radius: 20px; padding: 3px 12px; font-size: 0.78rem; border: 1px solid #dee2e6; background: #fff; cursor: pointer; transition: all .2s; }
+  .chart-period-btn.active, .chart-period-btn:hover { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+  .top-customer-row:hover { background: #f0f7ff; }
+  .rank-badge { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+  .rank-1 { background: #fbbf24; color: #fff; }
+  .rank-2 { background: #94a3b8; color: #fff; }
+  .rank-3 { background: #cd7c2e; color: #fff; }
+  .rank-other { background: #e2e8f0; color: #475569; }
+  .kpi-growth { font-size: 0.72rem; margin-top: 2px; }
+  .export-btn { font-size: 0.8rem; padding: 5px 12px; border-radius: 6px; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .section-title { font-size: 1rem; font-weight: 600; color: #1e293b; margin: 0; }
+</style>
+
+<div class="page-wrapper">
+  <div class="content">
+
+    <!-- ── Filter Bar ───────────────────────────────────────────── -->
+    <div class="card mb-3">
+      <div class="card-body pb-0">
+        <form method="get" action="{% url 'home' %}" id="filter-form">
+          <div class="row align-items-end">
+
+            <!-- Date range -->
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label small fw-semibold">From Date</label>
+                <div class="input-groupicon">
+                  <input type="text" name="from_date" value="{{ from_date }}"
+                    placeholder="DD-MM-YYYY" class="datetimepicker form-control" />
+                  <div class="addonset"><img src="{% static 'img/icons/calendars.svg' %}" alt="cal" /></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label small fw-semibold">To Date</label>
+                <div class="input-groupicon">
+                  <input type="text" name="to_date" value="{{ to_date }}"
+                    placeholder="DD-MM-YYYY" class="datetimepicker form-control" />
+                  <div class="addonset"><img src="{% static 'img/icons/calendars.svg' %}" alt="cal" /></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product filter -->
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label small fw-semibold">Product</label>
+                <select name="product_id" class="form-select form-select-sm">
+                  <option value="">All Products</option>
+                  {% for p in products %}
+                    <option value="{{ p.productid }}" {% if selected_product == p.productid %}selected{% endif %}>
+                      {{ p.product_name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <!-- Admin: user filter -->
+            {% if is_admin %}
+            <div class="col-lg-2 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label small fw-semibold">Sales Rep</label>
+                <select name="user_id" class="form-select form-select-sm">
+                  <option value="">All Users</option>
+                  {% for u in users %}
+                    <option value="{{ u.id }}" {% if selected_user_id == u.id|stringformat:'s' %}selected{% endif %}>
+                      {{ u.username }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Buttons -->
+            <div class="col-lg-4 col-sm-12 col-12">
+              <div class="form-group">
+                <label class="form-label small fw-semibold d-block">Quick Period</label>
+                <button type="submit" name="period" value="today"
+                  class="period-btn {% if period == 'today' %}active{% endif %}">Today</button>
+                <button type="submit" name="period" value="week"
+                  class="period-btn {% if period == 'week' %}active{% endif %}">This Week</button>
+                <button type="submit" name="period" value="month"
+                  class="period-btn {% if period == 'month' %}active{% endif %}">This Month</button>
+                <button type="submit" name="period" value="year"
+                  class="period-btn {% if period == 'year' %}active{% endif %}">This Year</button>
+                <a href="{% url 'home' %}" class="period-btn text-danger text-decoration-none">✕ Clear</a>
+              </div>
+            </div>
+
+            <div class="col-lg-1 col-sm-6 col-12">
+              <div class="form-group">
+                <label class="form-label small fw-semibold d-block">&nbsp;</label>
+                <button class="btn btn-primary btn-sm" type="submit">
+                  <img src="{% static 'img/icons/search-whites.svg' %}" alt="search" style="width:14px" /> Filter
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── KPI Widgets ──────────────────────────────────────────── -->
+    <div class="row">
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash1.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ total_paid }}">0</span> <small>Rwf</small></h5>
+            <h6>Total Paid Amount</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash1">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash2.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ total_to_be_paid }}">0</span> <small>Rwf</small></h5>
+            <h6>Expected Amount</h6>
+            <div class="kpi-growth">
+              {% if sales_growth >= 0 %}
+                <span class="growth-badge growth-up">▲ {{ sales_growth }}% vs last month</span>
+              {% else %}
+                <span class="growth-badge growth-down">▼ {{ sales_growth|slice:"1:" }}% vs last month</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash2">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash3.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ remaining_balance }}">0</span> <small>Rwf</small></h5>
+            <h6>Unpaid Balance</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12">
+        <div class="dash-widget dash3">
+          <div class="dash-widgetimg">
+            <span><img src="{% static 'img/icons/dash4.svg' %}" alt="img" /></span>
+          </div>
+          <div class="dash-widgetcontent">
+            <h5><span class="counters" data-count="{{ total_items }}">0</span></h5>
+            <h6>Total Items Sold</h6>
+          </div>
+        </div>
+      </div>
+
+      <!-- Count badges -->
+      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+        <div class="dash-count">
+          <div class="dash-counts"><h4>{{ customer_count }}</h4><h5>Customers</h5></div>
+          <div class="dash-imgs"><i data-feather="user"></i></div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+        <div class="dash-count das1">
+          <div class="dash-counts"><h4>{{ quotation_count }}</h4><h5>Quotations</h5></div>
+          <div class="dash-imgs"><i data-feather="user-check"></i></div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+        <div class="dash-count das2">
+          <div class="dash-counts"><h4>{{ registered_product }}</h4><h5>Products</h5></div>
+          <div class="dash-imgs"><i data-feather="file-text"></i></div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+        <div class="dash-count das3">
+          <div class="dash-counts"><h4>{{ sale_count }}</h4><h5>Sales Invoices</h5></div>
+          <div class="dash-imgs"><i data-feather="file"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Charts Row 1 ─────────────────────────────────────────── -->
+    <div class="row mt-2">
+
+      <!-- Sales Trend (period-switchable) -->
+      <div class="col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header pb-0">
+            <div class="section-header">
+              <h5 class="section-title">{{ chart_title }}</h5>
+              <div>
+                <a href="?chart_period=weekly&from_date={{ from_date }}&to_date={{ to_date }}"
+                   class="chart-period-btn {% if chart_period == 'weekly' %}active{% endif %}">Weekly</a>
+                <a href="?chart_period=monthly&from_date={{ from_date }}&to_date={{ to_date }}"
+                   class="chart-period-btn {% if chart_period == 'monthly' %}active{% endif %}">Monthly</a>
+                <a href="?chart_period=yearly&from_date={{ from_date }}&to_date={{ to_date }}"
+                   class="chart-period-btn {% if chart_period == 'yearly' %}active{% endif %}">Yearly</a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="chart_trend"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Status Stacked Bar -->
+      <div class="col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header pb-0">
+            <div class="section-header">
+              <h5 class="section-title">Payment Status by Month</h5>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="chart_payment"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Charts Row 2 ─────────────────────────────────────────── -->
+    <div class="row mt-2">
+
+      <!-- Revenue by Product -->
+      <div class="col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header pb-0">
+            <div class="section-header">
+              <h5 class="section-title">Revenue by Product (Top 8)</h5>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="chart_products"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Sparkline this week -->
+      <div class="col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header pb-0">
+            <div class="section-header">
+              <h5 class="section-title">Sales This Week (Daily)</h5>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="chart_daily"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Top Customers + Mostly Sold ─────────────────────────── -->
+    <div class="row mt-2">
+
+      <!-- Top 5 Customers -->
+      <div class="col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header pb-0">
+            <div class="section-header">
+              <h5 class="section-title">🏆 Top Customers</h5>
+              <a href="{% url 'top_customers' %}" class="btn btn-sm btn-outline-primary export-btn">View All</a>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <table class="table mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>Customer</th>
+                  <th class="text-end">Orders</th>
+                  <th class="text-end">Revenue (Rwf)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in top_customers %}
+                <tr class="top-customer-row">
+                  <td>
+                    <span class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% else %}rank-other{% endif %}">
+                      {{ forloop.counter }}
+                    </span>
+                  </td>
+                  <td>
+                    <strong>{{ c.sale__customer__customer_name }}</strong>
+                    <div class="text-muted small">{{ c.total_items }} items</div>
+                  </td>
+                  <td class="text-end">{{ c.total_orders }}</td>
+                  <td class="text-end fw-semibold">{{ c.total_amount|floatformat:0 }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-3">No customer data yet</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mostly Sold Products -->
+      <div class="col-lg-6 col-sm-12 col-12 d-flex">
+        <div class="card flex-fill">
+          <div class="card-header pb-0">
+            <div class="section-header">
+              <h5 class="section-title">Mostly Sold Products</h5>
+              <div>
+                <a href="{% url 'sales_report_excel' %}?from_date={{ from_date }}&to_date={{ to_date }}"
+                   class="btn btn-sm btn-success export-btn">
+                  <i data-feather="download" style="width:13px;height:13px;"></i> Excel
+                </a>
+                <a href="{% url 'sales_report_pdf' %}?from_date={{ from_date }}&to_date={{ to_date }}"
+                   class="btn btn-sm btn-danger export-btn ms-1">
+                  <i data-feather="file-text" style="width:13px;height:13px;"></i> PDF
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <div class="card-body pt-0">
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Amount (Rwf)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in sale_items_tot %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td class="productimgname">
+                      <div class="product-img">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}"
+                          style="width:40px;height:40px;object-fit:cover;border-radius:6px;" loading="lazy" />
+                      </div>
+                      <span class="product-name">{{ item.name }}</span>
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.total|floatformat:0 }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end of content -->
+  </div>
+</div>
+
+{% block javascript %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+  // ── Shared colours ──────────────────────────────────────────────────────
+  const C_BLUE    = '#1E3A5F';
+  const C_SKY     = '#0ea5e9';
+  const C_GREEN   = '#10b981';
+  const C_AMBER   = '#f59e0b';
+  const C_RED     = '#ef4444';
+  const C_PURPLE  = '#8b5cf6';
+
+  // ── Chart 1: Sales Trend ────────────────────────────────────────────────
+  new ApexCharts(document.querySelector("#chart_trend"), {
+    series: [{ name: 'Sales (Rwf)', data: {{ chart_data|safe }} }],
+    chart:  { type: 'area', height: 300, toolbar: { show: false },
+               zoom: { enabled: false } },
+    colors: [C_SKY],
+    fill:   { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.45, opacityTo: 0.05 } },
+    stroke: { curve: 'smooth', width: 3 },
+    dataLabels: { enabled: false },
+    xaxis:  { categories: {{ chart_labels|safe }},
+              labels: { style: { fontSize: '11px' } } },
+    yaxis:  { labels: { formatter: v => v.toLocaleString() + ' Rwf' } },
+    tooltip:{ y: { formatter: v => v.toLocaleString() + ' Rwf' } },
+    grid:   { borderColor: '#f1f5f9' },
+  }).render();
+
+  // ── Chart 2: Payment Status Stacked Bar ─────────────────────────────────
+  new ApexCharts(document.querySelector("#chart_payment"), {
+    series: [
+      { name: 'Full Paid',   data: {{ full_amounts|safe }} },
+      { name: 'Partial',     data: {{ partial_amounts|safe }} },
+      { name: 'Pending',     data: {{ pending_amounts|safe }} },
+    ],
+    chart:  { type: 'bar', height: 300, stacked: true, toolbar: { show: false } },
+    colors: [C_GREEN, C_AMBER, C_RED],
+    plotOptions: { bar: { horizontal: false, columnWidth: '55%', borderRadius: 4,
+                          borderRadiusApplication: 'end' } },
+    dataLabels: { enabled: false },
+    stroke:  { show: true, width: 2, colors: ['transparent'] },
+    xaxis:   { categories: {% if months %}{{ months|safe }}{% else %}['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']{% endif %} },
+    yaxis:   { labels: { formatter: v => v.toLocaleString() } },
+    tooltip: { y: { formatter: v => 'Rwf ' + v.toLocaleString() } },
+    legend:  { position: 'top' },
+    grid:    { borderColor: '#f1f5f9' },
+  }).render();
+
+  // ── Chart 3: Revenue by Product ─────────────────────────────────────────
+  new ApexCharts(document.querySelector("#chart_products"), {
+    series: [{ name: 'Revenue (Rwf)', data: {{ product_chart_data|safe }} }],
+    chart:  { type: 'bar', height: 300, toolbar: { show: false } },
+    colors: [C_PURPLE],
+    plotOptions: { bar: { horizontal: true, borderRadius: 4,
+                          dataLabels: { position: 'top' } } },
+    dataLabels: { enabled: false },
+    xaxis:  { categories: {{ product_chart_labels|safe }},
+              labels: { formatter: v => v.toLocaleString() } },
+    tooltip:{ x: { formatter: v => v },
+              y: { formatter: v => 'Rwf ' + v.toLocaleString() } },
+    grid:   { borderColor: '#f1f5f9' },
+  }).render();
+
+  // ── Chart 4: Daily Sparkline ─────────────────────────────────────────────
+  new ApexCharts(document.querySelector("#chart_daily"), {
+    series: [{ name: 'Daily Sales', data: {{ daily_data|safe }} }],
+    chart:  { type: 'line', height: 300, toolbar: { show: false },
+               sparkline: { enabled: false } },
+    colors: [C_AMBER],
+    stroke: { curve: 'smooth', width: 3 },
+    markers:{ size: 6, strokeColors: '#fff', strokeWidth: 2, hover: { size: 8 } },
+    dataLabels: { enabled: false },
+    xaxis:  { categories: {{ daily_labels|safe }},
+              labels: { style: { fontSize: '12px' } } },
+    yaxis:  { labels: { formatter: v => v.toLocaleString() + ' Rwf' } },
+    tooltip:{ y: { formatter: v => v.toLocaleString() + ' Rwf' } },
+    fill:   { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0 } },
+    grid:   { borderColor: '#f1f5f9' },
+  }).render();
+</script>
+{% endblock %}
+{% endblock %}

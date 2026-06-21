@@ -1,0 +1,159 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %}Customer Report{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="content">
+    <div class="page-header">
+      <div class="page-title">
+        <h4>Customer Purchase Report</h4>
+        <h6>Manage your customer purchases Report</h6>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="table-top">
+          <div class="search-set">
+            <div class="search-path">
+              <a class="btn btn-filter" id="filter_search">
+                <img src="{% static 'img/icons/filter.svg' %}" alt="img" />
+                <span><img src="{% static 'img/icons/closes.svg' %}" alt="img" /></span>
+              </a>
+            </div>
+            <div class="search-input">
+              <a class="btn btn-searchset">
+                <img src="{% static 'img/icons/search-white.svg' %}" alt="img" />
+              </a>
+            </div>
+          </div>
+          <div class="wordset">
+            <ul>
+              <li>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="PDF">
+                  <img src="{% static 'img/icons/pdf.svg' %}" alt="img" />
+                </a>
+              </li>
+              <li>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Excel">
+                  <img src="{% static 'img/icons/excel.svg' %}" alt="img" />
+                </a>
+              </li>
+              <li>
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Print">
+                  <img src="{% static 'img/icons/printer.svg' %}" alt="img" />
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Filter Form -->
+        <div class="card" id="filter_inputs">
+          <div class="card-body pb-0">
+            <form method="GET" id="filter-form">
+              <div class="row">
+                <div class="col-lg-2 col-sm-6 col-12">
+                  <div class="form-group">
+                    <div class="input-groupicon">
+                      <input type="text" name="from_date" placeholder="From Date" class="datetimepicker" value="{{ request.GET.from_date|default_if_none:'' }}" />
+                      <div class="addonset">
+                        <img src="{% static 'img/icons/calendars.svg' %}" alt="img" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                  <div class="form-group">
+                    <div class="input-groupicon">
+                      <input type="text" name="to_date" placeholder="To Date" class="datetimepicker" value="{{ request.GET.to_date|default_if_none:'' }}" />
+                      <div class="addonset">
+                        <img src="{% static 'img/icons/calendars.svg' %}" alt="img" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-sm-6 col-12">
+                  <div class="form-group">
+                    <select class="select" id="product_id" name="product_id">
+                      <option value="">All Products</option>
+                      {% for product in products %}
+                        <option value="{{ product.productid }}" {% if request.GET.product_id|stringformat:"s" == product.productid|stringformat:"s" %}selected{% endif %}>
+                          {{ product.product_name }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-filters ms-auto">
+                      <img src="{% static 'img/icons/search-whites.svg' %}" alt="img" />
+                    </button>
+                  </div>
+                </div>
+                {% if request.GET.product_id or request.GET.from_date or request.GET.to_date %}
+                  <div class="col-lg-1 col-sm-6 col-12 ms-auto">
+                    <div class="form-group">
+                      <a href="{% url 'top_customers' %}" class="btn btn-secondary">Clear</a>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Customers Table -->
+        <div class="table-responsive">
+          <table class="table datanew">
+            <thead>
+              <tr>
+                <th>
+                  <label class="checkboxs">
+                    <input type="checkbox" id="select-all" />
+                    <span class="checkmarks"></span>
+                  </label>
+                </th>
+                <th>Rank</th>
+                <th>Customer Name</th>
+                <th>Total Items Purchased</th>
+                <th>Total Amount Paid</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for customer in top_customers %}
+                <tr>
+                  <td>
+                    <label class="checkboxs">
+                      <input type="checkbox" />
+                      <span class="checkmarks"></span>
+                    </label>
+                  </td>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ customer.sale__customer__customer_name }}</td>
+                  <td>{{ customer.total_items|floatformat:0 }}</td>
+                  <td>{{ customer.total_amount|floatformat:0 }} Rwf</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-sm text-gray-500">No customers found</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function submitForm() {
+    document.getElementById("filter-form").submit();
+  }
+</script>
+
+{% endblock %}
